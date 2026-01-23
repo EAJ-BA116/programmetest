@@ -1,7 +1,58 @@
-// ⚠️ Bannière d’alerte globale
+// ⚠️ Bannières d’alerte (multi-cibles : all / EAJ1 / EAJ2 / EAJ3)
+const ALERT_BANNERS = [
+  {
+    "actif": true,
+    "emoji": "⚠️",
+    "type": "attention",
+    "texte": "N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.",
+    "cibles": [
+      "EAJ1"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "ℹ️",
+    "type": "information",
+    "texte": "vous etes",
+    "cibles": [
+      "EAJ2"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "✅",
+    "type": "confirmation",
+    "texte": "salut",
+    "cibles": [
+      "EAJ3"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "📢",
+    "type": "annonce",
+    "texte": "zdz",
+    "cibles": [
+      "EAJ1",
+      "EAJ3"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "🚫",
+    "type": "important",
+    "texte": "esef",
+    "cibles": [
+      "EAJ1",
+      "EAJ3"
+    ]
+  }
+];
+
+// ⚠️ Compat (ancien format) : concaténation des bannières
 const ALERT_BANNER = {
   "actif": true,
-  "texte": "EAJ 1  : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires."
+  "texte": "⚠️ N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.\nℹ️ vous etes\n✅ salut\n📢 zdz\n🚫 esef"
 };
 
 // 📝 Dernière mise à jour (affichée dans le footer)
