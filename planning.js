@@ -1,17 +1,7 @@
-// ⚠️ Bannières d’alerte (multi-cibles : all / EAJ1 / EAJ2 / EAJ3)
-const ALERT_BANNERS = [
-  {
-    "actif": true,
-    "emoji": "📢",
-    "texte": "EAJ 1 : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.",
-    "cibles": ["EAJ1"]
-  }
-];
-
-// ⚠️ Compat (ancien format) : concaténation des bannières
+// ⚠️ Bannière d’alerte globale
 const ALERT_BANNER = {
   "actif": true,
-  "texte": "📢 EAJ 1 : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires."
+  "texte": "EAJ 1  : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires."
 };
 
 // 📝 Dernière mise à jour (affichée dans le footer)
