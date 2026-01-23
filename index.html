@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Programme EAJ – BA 116</title>
+
+  <!-- Couleur navigateur -->
+  <meta name="theme-color" content="#0053a6">
+
+  <!-- PWA Android -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="EAJ 116">
+  <link rel="apple-touch-icon" href="images/logo_eaj192.png">
+
+  <!-- Icônes Android -->
+  <link rel="icon" type="image/png" sizes="192x192" href="images/logo_eaj192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/logo_eaj512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/eaj.ico">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+
+<body data-theme="dark">
+  <!-- ⚠️ Bannière d’alerte -->
+  <div id="alert-banner"></div>
+
+  <header>
+    <div class="logo-wrapper">
+      <!-- 💡 Mets ton logo ici : images/logo-eaj.png -->
+      <img src="images/logo_eaj.png" alt="Logo Escadrilles Air Jeunesse">
+      <div class="site-title-text">
+        <h1>Escadrilles Air Jeunesse</h1>
+        <p>BA 116 – Programme des activités</p>
+        <div class="badge-time">
+          ⏱ Mercredi après-midi • 14h–17h (et événements ponctuels)
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Barre filtres + bouton thème -->
+  <div id="filter-bar">
+    <div id="filter-buttons">
+      <button class="btn-filter" data-filter="all">Tous</button>
+      <button class="btn-filter" data-filter="EAJ1">EAJ1</button>
+      <button class="btn-filter" data-filter="EAJ2">EAJ2</button>
+      <button class="btn-filter" data-filter="EAJ3">EAJ3</button>
+    </div>
+    <button id="theme-toggle" class="btn-theme" type="button">
+      🌙 Mode sombre
+    </button>
+  </div>
+
+  <!-- 🎨 Légende -->
+  <section class="legend">
+    <strong>Légende des activités :</strong>
+    <div class="legend-line">
+      📘 BIA &nbsp;•&nbsp;
+      🏃‍♂️ Sport &nbsp;•&nbsp;
+      🏛️ Visite &nbsp;•&nbsp;
+      🛠️ Projet &nbsp;•&nbsp;
+      ✈️ Aéromodélisme &nbsp;•&nbsp;
+      🛸 Drone &nbsp;•&nbsp;
+      🎯 Tir &nbsp;•&nbsp;
+      🤝 Rencontres &nbsp;•&nbsp;
+      🕯️ Devoir de mémoire &nbsp;•&nbsp;
+      🎖️ Cérémonie &nbsp;•&nbsp;
+      ✨ Autres
+
+    </div>
+  </section>
+
+  <main class="container">
+    <div id="week-container"></div>
+  </main>
+
+  <!-- ✅ Bas de page -->
+  <footer>
+    <div class="footer-line">EAJ BA 116 - 2025</div>
+    <div class="footer-line" id="last-update"></div>
+    <!-- 🔧 Lien discret admin -->
+    <div class="footer-line">
+      <a href="#" id="admin-link" class="footer-link footer-link-admin">
+        🔧 Accès administration
+      </a>
+    </div>
+  </footer>
+
+  <!-- 🔐 Fenêtre modale code admin -->
+<div id="admin-modal" class="admin-modal" aria-hidden="true">
+  <div class="admin-modal-backdrop"></div>
+  <div class="admin-modal-dialog">
+    <h2>Accès administrateur</h2>
+    <p class="admin-modal-text">
+      Cette zone est réservée aux encadrants EAJ.<br>
+      Merci de saisir le code d’accès.
+    </p>
+    <input type="password" id="admin-code-input" placeholder="Code d’accès" />
+    <div class="admin-modal-actions">
+      <button type="button" id="admin-cancel" class="btn-admin btn-admin-secondary">Annuler</button>
+      <button type="button" id="admin-validate" class="btn-admin btn-admin-primary">Valider</button>
+    </div>
+    <p class="admin-error" id="admin-error" style="display:none;">
+      Code incorrect. Merci de vérifier.
+    </p>
+  </div>
+</div>
+
+<button id="back-to-top" class="back-to-top air-patch" type="button">
+  ✈️
+</button>
+
+   <!-- ⚙️ JS : d’abord planning.js (avec version), puis la logique -->
+  <script src="version-loader.js"></script>
+
+<script>
+window.addEventListener("load", () => {
+  // 👉 URL de ton Worker Cloudflare
+  const webhookUrl = "https://eaj-discord-proxy.yoann-bluestorm.workers.dev";
+
+  // 🛡 Code admin attendu (à adapter)
+  const ADMIN_CODE = "EAJ-ADMIN-2025";
+
+  // Petite fonction utilitaire pour envoyer un message Discord
+  function logToDiscord(lignes) {
+    fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: lignes.join("\n")
+      })
+    }).catch(() => {
+      // On ignore les erreurs, le site ne doit jamais planter pour ça
+    });
+  }
+
+  // 1) Détection PWA / navigateur
+  const isStandalone =
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+    (window.navigator.standalone === true);
+
+  const mode = isStandalone ? "PWA installée (icône écran d'accueil)" : "Navigation classique";
+
+  // 2) Type d'appareil approximatif
+  const width = window.innerWidth || document.documentElement.clientWidth || screen.width || 0;
+  let deviceType = "inconnu";
+  if (width < 768) {
+    deviceType = "mobile";
+  } else if (width < 1024) {
+    deviceType = "tablette";
+  } else {
+    deviceType = "desktop";
+  }
+
+  // 3) Thème & filtre (issus du localStorage de ton site)
+  let filtre = "all";
+  let theme = document.body.dataset.theme || "default";
+
+  try {
+    const storedFilter = localStorage.getItem("eaj_filter");
+    if (storedFilter) filtre = storedFilter;
+  } catch (e) {}
+
+  try {
+    const storedTheme = localStorage.getItem("eaj_theme");
+    if (storedTheme) theme = storedTheme;
+  } catch (e) {}
+
+  // 4) User-Agent (raccourci)
+  const ua = navigator.userAgent || "N/A";
+  const shortUA = ua.length > 120 ? ua.substring(0, 120) + "…" : ua;
+
+  // 🛰 Log visite “classique”
+  const lignesVisite = [
+    "🛬 Nouvelle visite sur EAJ – BA 116",
+    "📅 " + new Date().toLocaleString(),
+    "",
+    "💻 Appareil : " + deviceType,
+    "📱 Mode : " + mode,
+    "🎨 Thème : " + theme,
+    "🎯 Filtre actif : " + filtre,
+    "",
+    "🌐 Page : " + window.location.href,
+    "🧭 User-Agent :",
+    shortUA
+  ];
+
+  logToDiscord(lignesVisite);
+
+  // 🔐 Détection tentative d’accès admin
+
+  const adminInput = document.getElementById("admin-code-input");
+  const adminValidateBtn = document.getElementById("admin-validate");
+  const adminError = document.getElementById("admin-error");
+
+  if (adminValidateBtn && adminInput && adminError) {
+    adminValidateBtn.addEventListener("click", () => {
+      const entered = adminInput.value || "";
+      const isOk = entered === ADMIN_CODE;
+
+      if (!isOk) {
+        // Affichage message erreur
+        adminError.style.display = "block";
+
+        // On masque le code saisi (même longueur mais pas lisible)
+        const masked = entered.length ? "•".repeat(entered.length) : "(vide)";
+
+        const lignesAdmin = [
+          "🚫 Tentative d’accès ADMIN échouée",
+          "📅 " + new Date().toLocaleString(),
+          "",
+          "💻 Appareil : " + deviceType,
+          "🌐 Page : " + window.location.href,
+          "🔑 Code saisi (masqué) : " + masked,
+          "",
+          "🧭 User-Agent :",
+          shortUA
+        ];
+
+        logToDiscord(lignesAdmin);
+      } else {
+        // Ici tu mets ce qui se passe quand le code est bon :
+        // - fermer la modale
+        // - rediriger vers une page admin
+        // etc.
+        adminError.style.display = "none";
+        // Exemple : alert("Accès admin OK");
+      }
+    });
+  }
+});
+</script>
+
+
+
+
+</body>
+</html>
