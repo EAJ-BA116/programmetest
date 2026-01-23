@@ -4,14 +4,33 @@ const ALERT_BANNERS = [
     "actif": true,
     "emoji": "📢",
     "texte": "EAJ 1 : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.",
-    "cibles": ["EAJ1"]
+    "cibles": [
+      "EAJ1"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "✅",
+    "texte": "vous etes betes",
+    "cibles": [
+      "EAJ3"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "🚫",
+    "texte": "bande de ramier",
+    "cibles": [
+      "EAJ1",
+      "EAJ3"
+    ]
   }
 ];
 
 // ⚠️ Compat (ancien format) : concaténation des bannières
 const ALERT_BANNER = {
   "actif": true,
-  "texte": "📢 EAJ 1 : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires."
+  "texte": "📢 EAJ 1 : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.\n✅ vous etes betes\n🚫 bande de ramier"
 };
 
 // 📝 Dernière mise à jour (affichée dans le footer)
