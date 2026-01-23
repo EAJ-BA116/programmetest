@@ -385,6 +385,8 @@ function initialiserFiltres() {
 
   // Appliquer au démarrage
   appliquerFiltre(filtreActuel);
+  // 🔔 Bannière filtrée (EAJ1/2/3)
+  renderAlert(filtreActuel);
 
   // Etat visuel
   boutons.forEach(btn => {
@@ -405,6 +407,7 @@ function initialiserFiltres() {
       btn.classList.add("active");
 
       appliquerFiltre(filter);
+      renderAlert(filter);
 
       try {
         localStorage.setItem("eaj_filter", filter);
@@ -454,11 +457,43 @@ function renderLastUpdate() {
   el.textContent = `Programme mis à jour par ${LAST_UPDATE.auteur} le ${LAST_UPDATE.dateTexte}`;
 }
 
-function renderAlert() {
+function renderAlert(filtreActuel = "all") {
   const banner = document.getElementById("alert-banner");
-  if (!banner || typeof ALERT_BANNER === "undefined") return;
-  if (!ALERT_BANNER || !ALERT_BANNER.actif) return;
-  banner.textContent = ALERT_BANNER.texte;
+  if (!banner) return;
+
+  // 🧩 Compat : ancien format (ALERT_BANNER) / nouveau format (ALERT_BANNERS)
+  let banners = [];
+
+  if (typeof ALERT_BANNERS !== "undefined" && Array.isArray(ALERT_BANNERS)) {
+    banners = ALERT_BANNERS;
+  } else if (typeof ALERT_BANNER !== "undefined" && ALERT_BANNER) {
+    banners = [{
+      actif: !!ALERT_BANNER.actif,
+      emoji: "⚠️",
+      texte: ALERT_BANNER.texte || "",
+      cibles: ["all"]
+    }];
+  }
+
+  // Nettoyage
+  banner.textContent = "";
+  banner.style.display = "none";
+
+  // Filtrage
+  const lignes = (banners || [])
+    .filter(b => b && b.actif && String(b.texte || "").trim().length > 0)
+    .filter(b => {
+      const cibles = Array.isArray(b.cibles) ? b.cibles : [];
+      if (!cibles.length) return true; // si non précisé → visible pour tous
+      if (cibles.includes("all")) return true;
+      if (filtreActuel === "all") return true; // en vue "Tous" on affiche tout
+      return cibles.includes(filtreActuel);
+    })
+    .map(b => `${b.emoji ? b.emoji + " " : ""}${String(b.texte).trim()}`);
+
+  if (!lignes.length) return;
+
+  banner.textContent = lignes.join("\n");
   banner.style.display = "block";
 }
 

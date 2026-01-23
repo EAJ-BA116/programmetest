@@ -1,13 +1,50 @@
-// ⚠️ Bannière d’alerte globale
+// ⚠️ Bannières d’alerte (multi-cibles : all / EAJ1 / EAJ2 / EAJ3)
+const ALERT_BANNERS = [
+  {
+    "actif": true,
+    "emoji": "ℹ️",
+    "texte": "EAJ 1 : N'oublDDVXiez pas de vous inscrire au BIA auprès de vos établissements scolaires.",
+    "cibles": [
+      "EAJ1"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "✅",
+    "texte": "SSCSC",
+    "cibles": [
+      "EAJ2"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "✅",
+    "texte": "BFBFC",
+    "cibles": [
+      "EAJ3"
+    ]
+  },
+  {
+    "actif": true,
+    "emoji": "⚠️",
+    "texte": "BHUBSDHUUBVD",
+    "cibles": [
+      "EAJ1",
+      "EAJ3"
+    ]
+  }
+];
+
+// ⚠️ Compat (ancien format) : concaténation des bannières
 const ALERT_BANNER = {
   "actif": true,
-  "texte": "EAJ 1  : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires."
+  "texte": "ℹ️ EAJ 1 : N'oublDDVXiez pas de vous inscrire au BIA auprès de vos établissements scolaires.\n✅ SSCSC\n✅ BFBFC\n⚠️ BHUBSDHUUBVD"
 };
 
 // 📝 Dernière mise à jour (affichée dans le footer)
 const LAST_UPDATE = {
   "auteur": "Yoann",
-  "dateTexte": "23/01/2026"
+  "dateTexte": "12/01/2026"
 };
 
 // 🗓️ LISTE DES SEMAINES / ÉVÉNEMENTS (isoDate au format AAAA-MM-JJ)

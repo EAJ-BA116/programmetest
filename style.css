@@ -59,6 +59,7 @@ body[data-theme="dark"] {
   font-size: 0.9rem;
   border-bottom: 1px solid #fca5a5;
   font-weight: 500;
+  white-space: pre-line; /* permet plusieurs messages (retours ligne) */
 }
 
 header {
