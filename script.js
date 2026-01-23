@@ -461,6 +461,50 @@ function renderAlert(filtreActuel = "all") {
   const banner = document.getElementById("alert-banner");
   if (!banner) return;
 
+  // 🎨 Couleur de la bannière suivant l'emoji (circles/squares/triangles + quelques classiques)
+  function getToneFromEmoji(emojiRaw) {
+    const emoji = String(emojiRaw || "").trim();
+    if (!emoji) return "blue";
+
+    // On regarde le premier caractère emoji (souvent suffisant ici)
+    const e = Array.from(emoji)[0] || emoji;
+
+    const map = {
+      // 🔴 Red
+      "🔴": "red", "🟥": "red", "❤️": "red", "❌": "red", "🛑": "red",
+      // 🟠 Orange
+      "🟠": "orange", "🟧": "orange",
+      // 🟡 Yellow
+      "🟡": "yellow", "🟨": "yellow", "⚠": "yellow", "⚠️": "yellow",
+      // 🟢 Green
+      "🟢": "green", "🟩": "green", "✅": "green",
+      // 🔵 Blue
+      "🔵": "blue", "🟦": "blue", "ℹ": "blue", "ℹ️": "blue", "📢": "blue",
+      // 🟣 Purple
+      "🟣": "purple", "🟪": "purple",
+      // ⚫/⚪ Gray
+      "⚫": "gray", "⚪": "gray", "⬛": "gray", "⬜": "gray"
+    };
+
+    return map[e] || map[emoji] || "blue";
+  }
+
+  function formatCibles(ciblesRaw) {
+    const cibles = Array.isArray(ciblesRaw) ? ciblesRaw : [];
+    if (!cibles.length || cibles.includes("all")) return "Tous";
+
+    const order = { EAJ1: 1, EAJ2: 2, EAJ3: 3 };
+    return [...new Set(cibles)]
+      .sort((a, b) => (order[a] || 99) - (order[b] || 99))
+      .map(c => {
+        if (c === "EAJ1") return "EAJ 1";
+        if (c === "EAJ2") return "EAJ 2";
+        if (c === "EAJ3") return "EAJ 3";
+        return String(c);
+      })
+      .join(" + ");
+  }
+
   // 🧩 Compat : ancien format (ALERT_BANNER) / nouveau format (ALERT_BANNERS)
   let banners = [];
 
@@ -476,11 +520,11 @@ function renderAlert(filtreActuel = "all") {
   }
 
   // Nettoyage
-  banner.textContent = "";
+  banner.innerHTML = "";
   banner.style.display = "none";
 
   // Filtrage
-  const lignes = (banners || [])
+  const visibles = (banners || [])
     .filter(b => b && b.actif && String(b.texte || "").trim().length > 0)
     .filter(b => {
       const cibles = Array.isArray(b.cibles) ? b.cibles : [];
@@ -488,12 +532,25 @@ function renderAlert(filtreActuel = "all") {
       if (cibles.includes("all")) return true;
       if (filtreActuel === "all") return true; // en vue "Tous" on affiche tout
       return cibles.includes(filtreActuel);
-    })
-    .map(b => `${b.emoji ? b.emoji + " " : ""}${String(b.texte).trim()}`);
+    });
 
-  if (!lignes.length) return;
+  if (!visibles.length) return;
 
-  banner.textContent = lignes.join("\n");
+  // On affiche chaque annonce séparément (et colorée)
+  visibles.forEach(b => {
+    const item = document.createElement("div");
+    const tone = getToneFromEmoji(b.emoji);
+    item.className = `alert-item alert-tone-${tone}`;
+
+    const emoji = b.emoji ? String(b.emoji).trim() : "";
+    const ciblesLabel = formatCibles(b.cibles);
+    const message = String(b.texte).trim();
+
+    // Format demandé : emoji + "Annonce" + "EAJ 3" + message
+    item.textContent = `${emoji ? emoji + " " : ""}Annonce ${ciblesLabel} : ${message}`;
+    banner.appendChild(item);
+  });
+
   banner.style.display = "block";
 }
 
