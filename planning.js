@@ -2,56 +2,16 @@
 const ALERT_BANNERS = [
   {
     "actif": true,
-    "emoji": "🚫",
-    "type": "important",
-    "texte": "N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.\nInscrivez vous au BIA du 28 janvier au 11 mars 2026",
-    "cibles": [
-      "EAJ1"
-    ]
-  },
-  {
-    "actif": true,
-    "emoji": "🚫",
-    "type": "important",
-    "texte": "Test",
-    "cibles": [
-      "all"
-    ]
-  },
-  {
-    "actif": true,
     "emoji": "📢",
-    "type": "annonce",
-    "texte": "betebfe",
-    "cibles": [
-      "EAJ2",
-      "EAJ3"
-    ]
-  },
-  {
-    "actif": true,
-    "emoji": "✅",
-    "type": "confirmation",
-    "texte": "nggv",
-    "cibles": [
-      "EAJ3"
-    ]
-  },
-  {
-    "actif": true,
-    "emoji": "ℹ️",
-    "type": "information",
-    "texte": "gngvngvn",
-    "cibles": [
-      "EAJ2"
-    ]
+    "texte": "EAJ 1 : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.",
+    "cibles": ["EAJ1"]
   }
 ];
 
 // ⚠️ Compat (ancien format) : concaténation des bannières
 const ALERT_BANNER = {
   "actif": true,
-  "texte": "🚫 N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.\nInscrivez vous au BIA du 28 janvier au 11 mars 2026\n🚫 Test\n📢 betebfe\n✅ nggv\nℹ️ gngvngvn"
+  "texte": "📢 EAJ 1 : N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires."
 };
 
 // 📝 Dernière mise à jour (affichée dans le footer)
