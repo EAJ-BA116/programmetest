@@ -461,48 +461,39 @@ function renderAlert(filtreActuel = "all") {
   const banner = document.getElementById("alert-banner");
   if (!banner) return;
 
-  // 🎨 Couleur de la bannière suivant l'emoji (circles/squares/triangles + quelques classiques)
-  function getToneFromEmoji(emojiRaw) {
-    const emoji = String(emojiRaw || "").trim();
-    if (!emoji) return "blue";
+  const TYPE_META = {
+    information: { label: "Information", cls: "info" },
+    attention:   { label: "Attention",   cls: "attention" },
+    confirmation:{ label: "Confirmation",cls: "confirmation" },
+    annonce:     { label: "Annonce",     cls: "annonce" },
+    important:   { label: "Important",   cls: "important" }
+  };
 
-    // On regarde le premier caractère emoji (souvent suffisant ici)
-    const e = Array.from(emoji)[0] || emoji;
+  const TYPE_FROM_EMOJI = {
+    "⚠️": "attention",
+    "ℹ️": "information",
+    "✅": "confirmation",
+    "📢": "annonce",
+    "🚫": "important"
+  };
 
-    const map = {
-      // 🔴 Red
-      "🔴": "red", "🟥": "red", "❤️": "red", "❌": "red", "🛑": "red",
-      // 🟠 Orange
-      "🟠": "orange", "🟧": "orange",
-      // 🟡 Yellow
-      "🟡": "yellow", "🟨": "yellow", "⚠": "yellow", "⚠️": "yellow",
-      // 🟢 Green
-      "🟢": "green", "🟩": "green", "✅": "green",
-      // 🔵 Blue
-      "🔵": "blue", "🟦": "blue", "ℹ": "blue", "ℹ️": "blue", "📢": "blue",
-      // 🟣 Purple
-      "🟣": "purple", "🟪": "purple",
-      // ⚫/⚪ Gray
-      "⚫": "gray", "⚪": "gray", "⬛": "gray", "⬜": "gray"
-    };
-
-    return map[e] || map[emoji] || "blue";
+  function normalizeType(b) {
+    const t = (b && b.type) ? String(b.type).toLowerCase() : "";
+    if (TYPE_META[t]) return t;
+    const emoji = (b && b.emoji) ? String(b.emoji) : "";
+    return TYPE_FROM_EMOJI[emoji] || "annonce";
   }
 
-  function formatCibles(ciblesRaw) {
-    const cibles = Array.isArray(ciblesRaw) ? ciblesRaw : [];
+  function formatTargets(ciblesArr) {
+    const cibles = Array.isArray(ciblesArr) ? ciblesArr : [];
     if (!cibles.length || cibles.includes("all")) return "Tous";
-
-    const order = { EAJ1: 1, EAJ2: 2, EAJ3: 3 };
-    return [...new Set(cibles)]
-      .sort((a, b) => (order[a] || 99) - (order[b] || 99))
-      .map(c => {
-        if (c === "EAJ1") return "EAJ 1";
-        if (c === "EAJ2") return "EAJ 2";
-        if (c === "EAJ3") return "EAJ 3";
-        return String(c);
-      })
-      .join(" + ");
+    const pretty = cibles.map(c => {
+      if (c === "EAJ1") return "EAJ 1";
+      if (c === "EAJ2") return "EAJ 2";
+      if (c === "EAJ3") return "EAJ 3";
+      return c;
+    });
+    return pretty.join(" + ");
   }
 
   // 🧩 Compat : ancien format (ALERT_BANNER) / nouveau format (ALERT_BANNERS)
@@ -536,19 +527,19 @@ function renderAlert(filtreActuel = "all") {
 
   if (!visibles.length) return;
 
-  // On affiche chaque annonce séparément (et colorée)
+  // Affichage : une ligne = une bannière, avec couleur selon le type.
   visibles.forEach(b => {
-    const item = document.createElement("div");
-    const tone = getToneFromEmoji(b.emoji);
-    item.className = `alert-item alert-tone-${tone}`;
+    const type = normalizeType(b);
+    const meta = TYPE_META[type] || TYPE_META.annonce;
+    const targets = formatTargets(b.cibles);
+    const message = String(b.texte || "").trim();
+    const emoji = b.emoji ? String(b.emoji) : "";
 
-    const emoji = b.emoji ? String(b.emoji).trim() : "";
-    const ciblesLabel = formatCibles(b.cibles);
-    const message = String(b.texte).trim();
-
-    // Format demandé : emoji + "Annonce" + "EAJ 3" + message
-    item.textContent = `${emoji ? emoji + " " : ""}Annonce ${ciblesLabel} : ${message}`;
-    banner.appendChild(item);
+    const line = document.createElement("div");
+    line.className = `alert-line alert-line--${meta.cls}`;
+    // Format demandé : [emoji] Annonce [EAJ 3] : [message]
+    line.textContent = `${emoji ? emoji + " " : ""}${meta.label} [${targets}] : ${message}`;
+    banner.appendChild(line);
   });
 
   banner.style.display = "block";

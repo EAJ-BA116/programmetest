@@ -136,6 +136,21 @@ const BANNER_EMOJI_OPTIONS = [
   { value: "🚫", label: "🚫 Important" }
 ];
 
+// On déduit le type de bannière depuis l’emoji choisi.
+// L’utilisateur choisit "Attention/Information/Confirmation/Annonce/Important"
+// via l’emoji, et le style/couleur s’aligne automatiquement.
+const BANNER_TYPE_FROM_EMOJI = {
+  "⚠️": "attention",
+  "ℹ️": "information",
+  "✅": "confirmation",
+  "📢": "annonce",
+  "🚫": "important"
+};
+
+function bannerTypeFromEmoji(emoji) {
+  return BANNER_TYPE_FROM_EMOJI[emoji] || "annonce";
+}
+
 function createBannerItem(initial = {}) {
   if (!bannersContainer) return null;
 
@@ -279,6 +294,7 @@ function getBannersDataFromForm() {
     return {
       actif: globalActif && actif,
       emoji,
+      type: bannerTypeFromEmoji(emoji),
       texte,
       cibles
     };

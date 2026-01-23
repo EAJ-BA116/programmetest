@@ -52,31 +52,51 @@ body[data-theme="dark"] {
 /* ⚠️ Bannière d’alerte */
 #alert-banner {
   display: none;
-  padding: 0.55rem 0.75rem;
+  /* Conteneur neutre : chaque ligne porte sa propre couleur */
+  background: transparent;
+  color: inherit;
+  padding: 0;
   text-align: center;
   font-size: 0.9rem;
-  font-weight: 500;
-  background: transparent;
-  border-bottom: 0;
+  border-bottom: none;
+  font-weight: 600;
 }
 
-/* Chaque annonce a sa couleur (suivant l'emoji) */
-#alert-banner .alert-item {
-  margin: 0.35rem auto;
-  max-width: 960px;
-  padding: 0.6rem 1rem;
-  border-radius: 0.65rem;
-  border: 1px solid;
-  white-space: pre-line; /* permet plusieurs messages (retours ligne) */
+.alert-line {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  white-space: normal;
 }
 
-#alert-banner .alert-tone-red    { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
-#alert-banner .alert-tone-orange { background: #ffedd5; color: #c2410c; border-color: #fdba74; }
-#alert-banner .alert-tone-yellow { background: #fef9c3; color: #a16207; border-color: #fde047; }
-#alert-banner .alert-tone-green  { background: #dcfce7; color: #166534; border-color: #86efac; }
-#alert-banner .alert-tone-blue   { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
-#alert-banner .alert-tone-purple { background: #f3e8ff; color: #7e22ce; border-color: #d8b4fe; }
-#alert-banner .alert-tone-gray   { background: #e5e7eb; color: #374151; border-color: #cbd5e1; }
+.alert-line--important {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-bottom-color: #93c5fd;
+}
+
+.alert-line--info {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-bottom-color: #7dd3fc;
+}
+
+.alert-line--confirmation {
+  background: #dcfce7;
+  color: #166534;
+  border-bottom-color: #86efac;
+}
+
+.alert-line--annonce {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border-bottom-color: #d8b4fe;
+}
+
+.alert-line--attention {
+  background: #ffedd5;
+  color: #9a3412;
+  border-bottom-color: #fdba74;
+}
 
 header {
   max-width: 960px;
