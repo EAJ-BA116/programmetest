@@ -11,6 +11,7 @@ const TYPES_ACTIVITE = {
   devoirMemoire:  { label: "Devoir de mémoire", emoji: "🕯️", color: "#facc15" },
   ceremonie:      { label: "Cérémonie",         emoji: "🎖️", color: "#e3312d" },
   autre:          { label: "Autres",            emoji: "✨",  color: "#64748b" }
+};
 
 // v1.2.0 — Meta
 const APP_VERSION = "1.2.0";
@@ -18,7 +19,7 @@ const APP_VERSION = "1.2.0";
 // 📲 WhatsApp (format international sans + ni espaces). Exemple : 33612345678
 // Laisse vide si tu ne veux pas afficher le bouton.
 const WHATSAPP_PHONE = "";
-};
+
 
 /* ---------- Petits helpers HTML ---------- */
 
