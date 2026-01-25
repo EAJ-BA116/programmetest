@@ -62,6 +62,10 @@ body[data-theme="dark"] {
   font-weight: 600;
 }
 
+
+#alert-banner.has-banners {
+  display: block;
+}
 .alert-line {
   padding: 0.65rem 1rem;
   border-bottom: 1px solid rgba(0,0,0,0.08);
@@ -1019,7 +1023,7 @@ body[data-theme="light"] .back-to-top.air-patch {
 
 /* ---------- Toggle affichage bannières ---------- */
 #alert-banner.is-hidden {
-  display: none;
+  display: none !important;
 }
 
 .toggle-banners {

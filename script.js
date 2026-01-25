@@ -520,7 +520,7 @@ function renderAlert(filtreActuel = "all") {
 
   // Nettoyage
   banner.innerHTML = "";
-  banner.style.display = "none";
+  banner.classList.remove("has-banners");
 
   // Date window (programmable banners)
   function parseDateLike(value) {
@@ -595,8 +595,9 @@ function renderAlert(filtreActuel = "all") {
     banner.appendChild(line);
   });
 
-  banner.style.display = "block";
+  banner.classList.add("has-banners");
 }
+
 
 /* ---------- Bouton retour haut (patch ✈️) ---------- */
 
