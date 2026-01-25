@@ -5,10 +5,8 @@ const ALERT_BANNERS = [
     "emoji": "⚠️",
     "type": "attention",
     "texte": "N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires. Les inscriptions ont lieu du 28 janvier au 11 mars 2026.",
-    "cibles": [
-      "EAJ1"
-    ],
-    "startDate": "28/01/2026",
+    "cibles": ["all"],
+    "startDate": "25/01/2026",
     "endDate": "11/03/2026"
   },
   {

@@ -18,7 +18,7 @@ const APP_VERSION = "1.2.0";
 
 // 📲 WhatsApp (format international sans + ni espaces). Exemple : 33612345678
 // Laisse vide si tu ne veux pas afficher le bouton.
-const WHATSAPP_PHONE = "";
+const WHATSAPP_PHONE = "33614732790";
 
 
 /* ---------- Petits helpers HTML ---------- */
@@ -743,26 +743,62 @@ function initialiserModales(){
 }
 
 function initialiserMenu(){
-  const btn=document.getElementById("menu-toggle");
-  const menu=document.getElementById("app-menu");
-  if(!btn||!menu) return;
-  const closeEls=menu.querySelectorAll("[data-menu-close]");
-  const items=menu.querySelectorAll("[data-action]");
-  const open=()=>{menu.classList.add("open");menu.setAttribute("aria-hidden","false");btn.setAttribute("aria-expanded","true");};
-  const close=()=>{menu.classList.remove("open");menu.setAttribute("aria-hidden","true");btn.setAttribute("aria-expanded","false");};
-  btn.addEventListener("click",()=>menu.classList.contains("open")?close():open());
-  closeEls.forEach((el)=>el.addEventListener("click",close));
+  const btn = document.getElementById("menu-toggle");
+  const menu = document.getElementById("app-menu");
+  if(!btn || !menu) return;
+
+  const panel = menu.querySelector(".menu-popover-panel");
+  const closeEls = menu.querySelectorAll("[data-menu-close]");
+  const items = menu.querySelectorAll("[data-action]");
+
+  const open = () => {
+    menu.classList.add("open");
+    menu.setAttribute("aria-hidden","false");
+    btn.setAttribute("aria-expanded","true");
+  };
+
+  const close = () => {
+    menu.classList.remove("open");
+    menu.setAttribute("aria-hidden","true");
+    btn.setAttribute("aria-expanded","false");
+  };
+
+  btn.addEventListener("click",(e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    menu.classList.contains("open") ? close() : open();
+  });
+
+  closeEls.forEach(el => el.addEventListener("click",(e)=>{ e.preventDefault(); close(); }));
+
+  // Click outside => close
+  document.addEventListener("click",(e)=>{
+    if(!menu.classList.contains("open")) return;
+    const target = e.target;
+    if(target === btn) return;
+    if(panel && panel.contains(target)) return;
+    close();
+  });
+
+  // Stop bubbling inside panel
+  if(panel){
+    panel.addEventListener("click",(e)=>e.stopPropagation());
+  }
+
   items.forEach((it)=>{
     it.addEventListener("click",()=>{
-      const act=it.getAttribute("data-action")||"";
+      const act = it.getAttribute("data-action") || "";
       close();
-      if(act==="scroll-projects"){const p=document.getElementById("projects");if(p)p.scrollIntoView({behavior:"smooth",block:"start"});return;}
-      if(act==="open-about"){openModalById("about-modal");return;}
-      if(act==="open-contact"){openModalById("contact-modal");return;}
-      if(act==="open-admin"){const a=document.getElementById("admin-link");if(a)a.click();return;}
+
+      if(act === "open-about"){ openModalById("about-modal"); return; }
+      if(act === "open-contact"){ openModalById("contact-modal"); return; }
+      if(act === "open-admin"){ const a=document.getElementById("admin-link"); if(a) a.click(); return; }
     });
   });
-  document.addEventListener("keydown",(e)=>{if(e.key==="Escape" && menu.classList.contains("open")) close();});
+
+  document.addEventListener("keydown",(e)=>{
+    if(e.key === "Escape" && menu.classList.contains("open")) close();
+  });
 }
 
 function initialiserContactCopy(){
