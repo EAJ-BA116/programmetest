@@ -4,61 +4,34 @@ const ALERT_BANNERS = [
     "actif": true,
     "emoji": "⚠️",
     "type": "attention",
-    "texte": "N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.",
+    "texte": "N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires. Les inscriptions ont lieu du 28 janvier au 11 mars 2026.",
     "cibles": [
       "EAJ1"
-    ]
-  },
-  {
-    "actif": true,
-    "emoji": "ℹ️",
-    "type": "information",
-    "texte": "vous etes",
-    "cibles": [
-      "EAJ2"
-    ]
-  },
-  {
-    "actif": true,
-    "emoji": "✅",
-    "type": "confirmation",
-    "texte": "salut",
-    "cibles": [
-      "EAJ3"
-    ]
+    ],
+    "startDate": "28/01/2026",
+    "endDate": "11/03/2026"
   },
   {
     "actif": true,
     "emoji": "📢",
     "type": "annonce",
-    "texte": "zdz",
-    "cibles": [
-      "EAJ1",
-      "EAJ3"
-    ]
-  },
-  {
-    "actif": true,
-    "emoji": "🚫",
-    "type": "important",
-    "texte": "esef",
-    "cibles": [
-      "EAJ1",
-      "EAJ3"
-    ]
+    "texte": "Message programmé : à partir du 15 mars 2026, une nouvelle annonce peut s'afficher ici.",
+    "cibles": ["all"],
+    "startDate": "15/03/2026"
   }
+
 ];
 
 // ⚠️ Compat (ancien format) : concaténation des bannières
 const ALERT_BANNER = {
-  "actif": true,
-  "texte": "⚠️ N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires.\nℹ️ vous etes\n✅ salut\n📢 zdz\n🚫 esef"
+  "actif": false,
+  "texte": "⚠️ N'oubliez pas de vous inscrire au BIA auprès de vos établissements scolaires. Les inscriptions ont lieu du 28 janvier au 11 mars 2026."
 };
 
 // 📝 Dernière mise à jour (affichée dans le footer)
 const LAST_UPDATE = {
   "auteur": "Yoann",
-  "dateTexte": "23/01/2026"
+  "dateTexte": "25/01/2026"
 };
 
 // 🗓️ LISTE DES SEMAINES / ÉVÉNEMENTS (isoDate au format AAAA-MM-JJ)
