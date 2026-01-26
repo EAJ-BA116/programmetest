@@ -131,19 +131,17 @@
         <button class="menu-popover-close" type="button" data-menu-close aria-label="Fermer le menu">✕</button>
       </div>
 
-      <label class="menu-field">
-        <span>Nos projets</span>
-
-        <button id="projects-btn" class="projects-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-          Ouvrir un projet…
-          <span class="projects-chevron" aria-hidden="true">▾</span>
+      <div class="menu-group">
+        <button id="projects-btn" class="menu-item menu-item-accordion" type="button" aria-expanded="false" aria-controls="projects-list">
+          🗂️ Nos projets
+          <span class="menu-chevron" aria-hidden="true">▾</span>
         </button>
 
-        <div id="projects-list" class="projects-list" role="listbox" aria-label="Nos projets" hidden>
-          <button class="projects-item" type="button" role="option" data-url="https://eaj-ba116.github.io/HenriFertet2025/">2025 – Henri Fertet</button>
-          <button class="projects-item" type="button" role="option" data-url="https://eaj-ba116.github.io/operationsagittaire/">2025 – Opération Sagittaire</button>
+        <div id="projects-list" class="menu-sublist" hidden>
+          <a class="menu-subitem" href="https://eaj-ba116.github.io/HenriFertet2025/" target="_blank" rel="noopener noreferrer">2025 – Henri Fertet <span aria-hidden="true">↗</span></a>
+          <a class="menu-subitem" href="https://eaj-ba116.github.io/operationsagittaire/" target="_blank" rel="noopener noreferrer">2025 – Opération Sagittaire <span aria-hidden="true">↗</span></a>
         </div>
-      </label>
+      </div>
 
       <nav class="menu-buttons" aria-label="Actions">
         <button class="menu-item" type="button" data-action="open-about">ℹ️ Version & changelog</button>

@@ -739,16 +739,11 @@ function initialiserProjectsMenu() {
     list.hidden ? openList() : closeList();
   });
 
-  // Click sur un projet
-  list.querySelectorAll("[data-url]").forEach((item) => {
-    item.addEventListener("click", () => {
-      const url = (item.getAttribute("data-url") || "").trim();
-      if (!url) return;
-
-      window.open(url, "_blank", "noopener,noreferrer");
+  // Click sur un projet (liens)
+  list.querySelectorAll("a[href]").forEach((a) => {
+    a.addEventListener("click", () => {
+      // on ferme les UI, puis le navigateur ouvrira le lien (target=_blank)
       closeList();
-
-      // Ferme aussi le menu compact (meilleure UX)
       if (menu && menu.classList.contains("open")) {
         menu.classList.remove("open");
         menu.setAttribute("aria-hidden", "true");
@@ -826,6 +821,24 @@ function initialiserMenu(){
     menu.setAttribute("aria-hidden","true");
     btn.setAttribute("aria-expanded","false");
   };
+
+  // 🧹 UX : si l'utilisateur commence à scroller la page, on ferme le menu
+  let lastScrollY = window.scrollY;
+  const onWindowScroll = () => {
+    const y = window.scrollY;
+    if(menu.classList.contains("open") && y !== lastScrollY){
+      close();
+    }
+    lastScrollY = y;
+  };
+  window.addEventListener("scroll", onWindowScroll, { passive: true });
+  // iOS : un léger swipe peut ne pas déclencher "scroll" immédiatement
+  document.addEventListener("touchmove", (e) => {
+    if(!menu.classList.contains("open")) return;
+    const t = e.target;
+    if(panel && panel.contains(t)) return; // si on bouge dans le menu, on laisse
+    close();
+  }, { passive: true });
 
   btn.addEventListener("click",(e)=>{
     e.preventDefault();
