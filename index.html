@@ -43,7 +43,7 @@
     </div>
 
     <button id="menu-toggle" class="btn-menu" type="button" aria-label="Ouvrir le menu" aria-controls="app-menu" aria-expanded="false">
-      ⋯
+      ☰
     </button>
   </header>
 
@@ -64,7 +64,6 @@
 
       <button id="theme-toggle" class="btn-theme" type="button">🌙 Mode sombre</button>
     </div>
-    <div class="filter-help">💡 Filtres : sélectionne un groupe pour afficher ses activités. “Tous” affiche tout (y compris les activités communes).</div>
   </div>
 
   <!-- 🎨 Légende (dépliable, fermée par défaut) -->
@@ -86,7 +85,22 @@
   </details>
 
   <main class="container">
-<div id="week-container"></div>
+    <!-- 🧭 Section projets (navigation depuis le menu) -->
+    <section id="projects" class="projects-section" aria-label="Nos projets">
+      <h2>Nos projets</h2>
+      <div class="projects-grid">
+        <a class="project-card" href="https://eaj-ba116.github.io/HenriFertet2025/" target="_blank" rel="noopener noreferrer">
+          <div class="project-title">2025 – Henri Fertet</div>
+          <div class="project-desc">Site projet • ouverture dans un nouvel onglet</div>
+        </a>
+        <a class="project-card" href="https://eaj-ba116.github.io/operationsagittaire/" target="_blank" rel="noopener noreferrer">
+          <div class="project-title">2025 – Opération Sagittaire</div>
+          <div class="project-desc">Site projet • ouverture dans un nouvel onglet</div>
+        </a>
+      </div>
+    </section>
+
+    <div id="week-container"></div>
   </main>
 
   <!-- ✅ Bas de page -->
@@ -105,9 +119,8 @@
     <div class="admin-modal-dialog">
       <h2>Accès administrateur</h2>
       <p class="admin-modal-text">
-        <strong>Outil interne : génération du planning.</strong><br>
-        Rien n’est publié automatiquement, rien n’est enregistré côté serveur.<br>
-        Code requis uniquement pour éviter les clics accidentels.
+        Cette zone est réservée aux encadrants EAJ.<br>
+        Merci de saisir le code d’accès.
       </p>
       <input type="password" id="admin-code-input" placeholder="Code d’accès" />
       <div class="admin-modal-actions">
@@ -120,35 +133,30 @@
 
   <!-- ✈️ Retour en haut -->
   <button id="back-to-top" class="back-to-top air-patch" type="button" aria-label="Retour en haut">✈️</button>
-  <!-- ⋯ Menu compact -->
-  <div id="app-menu" class="menu-popover" aria-hidden="true">
-    <div class="menu-popover-panel" role="dialog" aria-modal="true" aria-label="Menu">
-      <div class="menu-popover-header">
-        <div class="menu-popover-title">Menu</div>
-        <button class="menu-popover-close" type="button" data-menu-close aria-label="Fermer le menu">✕</button>
+
+  <!-- 🍔 Menu -->
+  <div id="app-menu" class="app-menu" aria-hidden="true">
+    <div class="app-menu-backdrop" data-menu-close></div>
+    <aside class="app-menu-panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="app-menu-header">
+        <div class="app-menu-title">Menu</div>
+        <button class="app-menu-close" type="button" data-menu-close aria-label="Fermer le menu">✕</button>
       </div>
 
-      <label class="menu-field">
-        <span>Nos projets</span>
-        <select id="projects-select" aria-label="Nos projets">
-          <option value="">Ouvrir un projet…</option>
-          <option value="https://eaj-ba116.github.io/HenriFertet2025/">2025 – Henri Fertet</option>
-          <option value="https://eaj-ba116.github.io/operationsagittaire/">2025 – Opération Sagittaire</option>
-        </select>
-      </label>
-
-      <nav class="menu-buttons" aria-label="Actions">
+      <nav class="app-menu-nav">
+        <button class="menu-item" type="button" data-action="scroll-projects">📁 Nos projets</button>
         <button class="menu-item" type="button" data-action="open-about">ℹ️ Version & changelog</button>
         <button class="menu-item" type="button" data-action="open-admin">🔧 Accès admin</button>
-        <button class="menu-item" type="button" data-action="open-contact">📲 Bug / Contact</button>
+        <button class="menu-item" type="button" data-action="open-contact">✉️ Signaler un bug / Contact</button>
       </nav>
 
-      <div class="menu-popover-footer muted">Version 1.2.0 • 25/01/2026</div>
-    </div>
+      <div class="app-menu-footer">
+        <div class="muted">Version 1.2.0 • 25/01/2026</div>
+      </div>
+    </aside>
   </div>
 
   <!-- ℹ️ Modal À propos / Changelog -->
-
   <div id="about-modal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" data-modal-close="about-modal"></div>
     <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="Version et changelog">
@@ -163,8 +171,8 @@
         <div class="changelog">
           <div class="changelog-title">Dernières modifications</div>
           <ul>
-            <li>Nouveau header + menu compact (navigation plus claire)</li>
-            <li>“Nos projets” dans le menu déroulant</li>
+            <li>Nouveau header + menu hamburger (navigation plus claire)</li>
+            <li>Section “Nos projets” (au lieu du menu déroulant)</li>
             <li>Correctifs : retour haut + accès admin</li>
             <li>Légende dépliable (fermée par défaut)</li>
             <li>Bannières programmables (dates début/fin)</li>
@@ -184,22 +192,15 @@
       </div>
 
       <div class="modal-body">
-        <p class="modal-meta">Décris le souci : la version et le lien de la page seront ajoutés automatiquement. Tu peux ensuite ouvrir WhatsApp ou copier le message.</p>
+        <p class="modal-meta">Décris le souci, puis copie le message (à coller dans ton canal habituel).</p>
 
         <label class="modal-field">
           <span>Message</span>
-          <textarea id="contact-message" rows="6" placeholder="Ex: Sur mobile, le filtre EAJ2 ne masque pas les activités communes…
-
-Étapes pour reproduire :
-1) …
-2) …
-Résultat obtenu : …
-Résultat attendu : …"></textarea>
+          <textarea id="contact-message" rows="6" placeholder="Ex: Sur mobile, le filtre EAJ2 ne masque pas les activités communes…"></textarea>
         </label>
 
         <div class="modal-actions">
-          <button id="open-whatsapp" class="btn-primary" type="button">Ouvrir WhatsApp</button>
-          <button id="copy-contact" class="btn-secondary" type="button">Copier le message</button>
+          <button id="copy-contact" class="btn-primary" type="button">Copier le message</button>
           <button class="btn-secondary" type="button" data-modal-close="contact-modal">Fermer</button>
         </div>
 
