@@ -1527,6 +1527,13 @@ header.app-header .btn-menu{
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  touch-action: manipulation;
+}
+
+/* Sur certains navigateurs, des sous-éléments peuvent capter le tap/clic.
+   On force l'évènement à tomber sur le bouton entier. */
+.menu-item-accordion > *{
+  pointer-events: none;
 }
 
 .menu-chevron{

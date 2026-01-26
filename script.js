@@ -733,10 +733,22 @@ function initialiserProjectsMenu() {
     btn.setAttribute("aria-expanded", "true");
   };
 
-  btn.addEventListener("click", (e) => {
+  const toggleList = () => (list.hidden ? openList() : closeList());
+
+  // ✅ Toggle sur toute la ligne (desktop + mobile)
+  // (on gère pointerup + click sans double déclenchement)
+  let __projectsPointerLock = false;
+  btn.addEventListener("pointerup", (e) => {
+    __projectsPointerLock = true;
     e.preventDefault();
-    e.stopPropagation();
-    list.hidden ? openList() : closeList();
+    toggleList();
+    setTimeout(() => { __projectsPointerLock = false; }, 350);
+  });
+
+  btn.addEventListener("click", (e) => {
+    if (__projectsPointerLock) return;
+    e.preventDefault();
+    toggleList();
   });
 
   // Click sur un projet (liens)
@@ -788,6 +800,85 @@ function closeModalById(id){
   el.setAttribute("aria-hidden","true");
 }
 
+/* ---------- Fermer les overlays au scroll ---------- */
+
+function closeOverlaysOnScroll(){
+  // Menu compact
+  const menu = document.getElementById("app-menu");
+  const menuBtn = document.getElementById("menu-toggle");
+  if(menu && menu.classList.contains("open")){
+    menu.classList.remove("open");
+    menu.setAttribute("aria-hidden","true");
+    if(menuBtn) menuBtn.setAttribute("aria-expanded","false");
+  }
+
+  // Sous-liste "Nos projets"
+  const pbtn = document.getElementById("projects-btn");
+  const plist = document.getElementById("projects-list");
+  if(pbtn && plist && !plist.hidden){
+    plist.hidden = true;
+    pbtn.setAttribute("aria-expanded","false");
+  }
+
+  // Modales standard
+  closeModalById("about-modal");
+  closeModalById("contact-modal");
+
+  // Modale admin
+  const admin = document.getElementById("admin-modal");
+  if(admin && admin.classList.contains("open")){
+    admin.classList.remove("open");
+    admin.setAttribute("aria-hidden","true");
+  }
+}
+
+function isTargetInsideOverlay(target){
+  const menuPanel = document.querySelector("#app-menu.open .menu-popover-panel");
+  if(menuPanel && menuPanel.contains(target)) return true;
+
+  const modalDialog = document.querySelector(".modal.open .modal-dialog");
+  if(modalDialog && modalDialog.contains(target)) return true;
+
+  const adminDialog = document.querySelector("#admin-modal.open .admin-modal-dialog");
+  if(adminDialog && adminDialog.contains(target)) return true;
+
+  return false;
+}
+
+function anyOverlayOpen(){
+  const menuOpen = document.getElementById("app-menu")?.classList.contains("open");
+  const modalOpen = !!document.querySelector(".modal.open");
+  const adminOpen = document.getElementById("admin-modal")?.classList.contains("open");
+  const plist = document.getElementById("projects-list");
+  const projectsOpen = !!(plist && !plist.hidden);
+  return !!(menuOpen || modalOpen || adminOpen || projectsOpen);
+}
+
+function initialiserCloseOnScroll(){
+  let lastY = window.scrollY;
+
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+    if(y !== lastY && anyOverlayOpen()){
+      closeOverlaysOnScroll();
+    }
+    lastY = y;
+  }, { passive: true });
+
+  // Mobile (swipe) + desktop (wheel) : on ferme si le geste n'est pas dans un overlay
+  document.addEventListener("touchmove", (e) => {
+    if(!anyOverlayOpen()) return;
+    if(isTargetInsideOverlay(e.target)) return;
+    closeOverlaysOnScroll();
+  }, { passive: true });
+
+  document.addEventListener("wheel", (e) => {
+    if(!anyOverlayOpen()) return;
+    if(isTargetInsideOverlay(e.target)) return;
+    closeOverlaysOnScroll();
+  }, { passive: true });
+}
+
 function initialiserModales(){
   document.querySelectorAll("[data-modal-close]").forEach((btn)=>{
     btn.addEventListener("click",()=>closeModalById(btn.getAttribute("data-modal-close")));
@@ -821,24 +912,6 @@ function initialiserMenu(){
     menu.setAttribute("aria-hidden","true");
     btn.setAttribute("aria-expanded","false");
   };
-
-  // 🧹 UX : si l'utilisateur commence à scroller la page, on ferme le menu
-  let lastScrollY = window.scrollY;
-  const onWindowScroll = () => {
-    const y = window.scrollY;
-    if(menu.classList.contains("open") && y !== lastScrollY){
-      close();
-    }
-    lastScrollY = y;
-  };
-  window.addEventListener("scroll", onWindowScroll, { passive: true });
-  // iOS : un léger swipe peut ne pas déclencher "scroll" immédiatement
-  document.addEventListener("touchmove", (e) => {
-    if(!menu.classList.contains("open")) return;
-    const t = e.target;
-    if(panel && panel.contains(t)) return; // si on bouge dans le menu, on laisse
-    close();
-  }, { passive: true });
 
   btn.addEventListener("click",(e)=>{
     e.preventDefault();
@@ -971,6 +1044,7 @@ renderLastUpdate();
 
 initialiserMenu();
 initialiserModales();
+initialiserCloseOnScroll();
 initialiserContactCopy();
 initialiserProjectsMenu();
 
