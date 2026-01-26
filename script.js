@@ -712,17 +712,64 @@ function initialiserBannerToggle() {
 /* ---------- Menu déroulant "Nos projets" ---------- */
 
 function initialiserProjectsMenu() {
-  const select = document.getElementById("projects-select");
-  if (!select) return;
+  const btn = document.getElementById("projects-btn");
+  const list = document.getElementById("projects-list");
+  if (!btn || !list) return;
 
-  select.addEventListener("change", () => {
-    const url = (select.value || "").trim();
-    if (!url) return;
-    // Ouvre dans un nouvel onglet et revient sur "Nos projets"
-    window.open(url, "_blank", "noopener,noreferrer");
-    select.value = "";
+  const menu = document.getElementById("app-menu");
+  const menuBtn = document.getElementById("menu-toggle");
+
+  const closeList = () => {
+    list.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  };
+
+  const openList = () => {
+    list.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+  };
+
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    list.hidden ? openList() : closeList();
   });
+
+  // Click sur un projet
+  list.querySelectorAll("[data-url]").forEach((item) => {
+    item.addEventListener("click", () => {
+      const url = (item.getAttribute("data-url") || "").trim();
+      if (!url) return;
+
+      window.open(url, "_blank", "noopener,noreferrer");
+      closeList();
+
+      // Ferme aussi le menu compact (meilleure UX)
+      if (menu && menu.classList.contains("open")) {
+        menu.classList.remove("open");
+        menu.setAttribute("aria-hidden", "true");
+        if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+  });
+
+  // Click dehors => ferme la liste
+  document.addEventListener("click", (e) => {
+    if (list.hidden) return;
+    const t = e.target;
+    if (btn.contains(t) || list.contains(t)) return;
+    closeList();
+  });
+
+  // Si le menu se ferme, on ferme aussi la liste
+  if (menu) {
+    const obs = new MutationObserver(() => {
+      if (!menu.classList.contains("open")) closeList();
+    });
+    obs.observe(menu, { attributes: true, attributeFilter: ["class"] });
+  }
 }
+
 
 
 

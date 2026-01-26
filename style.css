@@ -1,4 +1,6 @@
 :root {
+  color-scheme: light;
+
   /* Couleurs de base (light) */
   --blue-main: #0053a6;
   --blue-light: #e4effb;
@@ -16,6 +18,8 @@
 
 /* Thème sombre : on redéfinit les variables */
 body[data-theme="dark"] {
+  color-scheme: dark;
+
   --bg-page: #050816;
   --bg-card: #101827;
   --bg-card-soft: #161d2f;
@@ -46,6 +50,8 @@ body {
 }
 
 body[data-theme="dark"] {
+  color-scheme: dark;
+
   background: radial-gradient(circle at top, #0b1730 0, #050816 45%, #020617 100%);
 }
 
@@ -789,6 +795,18 @@ body[data-theme="dark"] .week-common-title {
   color: inherit;           /* même couleur que le texte principal */
 }
 
+/* 📱 Mobile : éviter les lignes “qui ne reviennent jamais” (flex + contenu long)
+   Le span est un item flex → on force la largeur et on autorise la césure. */
+@media (max-width: 720px) {
+  .activity-chip { max-width: 100%; }
+  .activity-chip > span { display: block; width: 100%; min-width: 0; }
+  .activity-chip small {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
 /* On n’utilise plus le petit rond */
 .activity-dot {
   display: none;
@@ -1520,6 +1538,58 @@ header.app-header .btn-menu{
 .menu-field select:focus{
   border-color: var(--blue-main);
   box-shadow: 0 0 0 3px rgba(0,83,166,.18);
+
+/* --- Projets : dropdown custom (évite le select iOS blanc) --- */
+.projects-trigger{
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-card-soft);
+  color: var(--text-main);
+  outline: none;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.projects-trigger:focus{
+  border-color: var(--blue-main);
+  box-shadow: 0 0 0 3px rgba(0,83,166,.18);
+}
+
+.projects-chevron{
+  opacity: .85;
+}
+
+.projects-list{
+  margin-top: 0.45rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.projects-item{
+  width: 100%;
+  padding: 0.7rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+}
+
+.projects-item + .projects-item{
+  border-top: 1px solid var(--border-soft);
+}
+
+.projects-item:hover{
+  background: var(--bg-card-soft);
+}
 }
 
 .menu-buttons{

@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
   <title>Programme EAJ – BA 116</title>
@@ -10,22 +13,22 @@
   <meta name="theme-color" content="#0053a6">
 
   <!-- PWA Android -->
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json?v=1.2.1">
 
   <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="EAJ 116">
-  <link rel="apple-touch-icon" href="images/logo_eaj192.png">
+  <link rel="apple-touch-icon" href="images/logo_eaj192.png?v=1.2.1">
 
   <!-- Icônes Android -->
-  <link rel="icon" type="image/png" sizes="192x192" href="images/logo_eaj192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="images/logo_eaj512.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/logo_eaj192.png?v=1.2.1">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/logo_eaj512.png?v=1.2.1">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="images/eaj.ico">
+  <link rel="icon" type="image/x-icon" href="images/eaj.ico?v=1.2.1">
 
-  <link id="main-style" rel="stylesheet" href="style.css">
+  <link id="main-style" rel="stylesheet" href="style.css?v=1.2.1">
 </head>
 
 <body data-theme="dark">
@@ -130,11 +133,16 @@
 
       <label class="menu-field">
         <span>Nos projets</span>
-        <select id="projects-select" aria-label="Nos projets">
-          <option value="">Ouvrir un projet…</option>
-          <option value="https://eaj-ba116.github.io/HenriFertet2025/">2025 – Henri Fertet</option>
-          <option value="https://eaj-ba116.github.io/operationsagittaire/">2025 – Opération Sagittaire</option>
-        </select>
+
+        <button id="projects-btn" class="projects-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+          Ouvrir un projet…
+          <span class="projects-chevron" aria-hidden="true">▾</span>
+        </button>
+
+        <div id="projects-list" class="projects-list" role="listbox" aria-label="Nos projets" hidden>
+          <button class="projects-item" type="button" role="option" data-url="https://eaj-ba116.github.io/HenriFertet2025/">2025 – Henri Fertet</button>
+          <button class="projects-item" type="button" role="option" data-url="https://eaj-ba116.github.io/operationsagittaire/">2025 – Opération Sagittaire</button>
+        </div>
       </label>
 
       <nav class="menu-buttons" aria-label="Actions">
@@ -209,6 +217,15 @@ Résultat attendu : …"></textarea>
   </div>
 
   <!-- ⚙️ JS : d’abord planning.js (avec version), puis la logique -->
-  <script src="version-loader.js"></script>
+  <script>
+  // Cache-buster global (évite les "versions fantômes" sur GitHub Pages)
+  window.EAJ_BUILD = "1.2.1";
+  (function () {
+    const bust = Date.now();
+    const s = document.createElement('script');
+    s.src = `version-loader.js?v=1.2.1-${bust}`;
+    document.head.appendChild(s);
+  })();
+</script>
 </body>
 </html>
