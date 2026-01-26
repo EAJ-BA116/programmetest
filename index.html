@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
   <title>Programme EAJ – BA 116</title>
 
@@ -43,7 +43,7 @@
     </div>
 
     <button id="menu-toggle" class="btn-menu" type="button" aria-label="Ouvrir le menu" aria-controls="app-menu" aria-expanded="false">
-      ☰
+      ⋯
     </button>
   </header>
 
@@ -64,6 +64,7 @@
 
       <button id="theme-toggle" class="btn-theme" type="button">🌙 Mode sombre</button>
     </div>
+    <div class="filter-help">💡 Filtres : sélectionne un groupe pour afficher ses activités. “Tous” affiche tout (y compris les activités communes).</div>
   </div>
 
   <!-- 🎨 Légende (dépliable, fermée par défaut) -->
@@ -85,29 +86,14 @@
   </details>
 
   <main class="container">
-    <!-- 🧭 Section projets (navigation depuis le menu) -->
-    <section id="projects" class="projects-section" aria-label="Nos projets">
-      <h2>Nos projets</h2>
-      <div class="projects-grid">
-        <a class="project-card" href="https://eaj-ba116.github.io/HenriFertet2025/" target="_blank" rel="noopener noreferrer">
-          <div class="project-title">2025 – Henri Fertet</div>
-          <div class="project-desc">Site projet • ouverture dans un nouvel onglet</div>
-        </a>
-        <a class="project-card" href="https://eaj-ba116.github.io/operationsagittaire/" target="_blank" rel="noopener noreferrer">
-          <div class="project-title">2025 – Opération Sagittaire</div>
-          <div class="project-desc">Site projet • ouverture dans un nouvel onglet</div>
-        </a>
-      </div>
-    </section>
-
-    <div id="week-container"></div>
+<div id="week-container"></div>
   </main>
 
   <!-- ✅ Bas de page -->
   <footer>
     <div class="footer-line">EAJ BA 116 – 2025</div>
     <div class="footer-line" id="last-update"></div>
-    <div class="footer-line footer-version">Version 1.2.0 du 25/01/2026 • Codé par Yoann</div>
+    <div class="footer-line footer-version">Version 1.2.1 du 25/01/2026 • Codé par Yoann</div>
     <div class="footer-line">
       <a href="#" id="admin-link" class="footer-link footer-link-admin">🔧 Accès administration</a>
     </div>
@@ -119,8 +105,9 @@
     <div class="admin-modal-dialog">
       <h2>Accès administrateur</h2>
       <p class="admin-modal-text">
-        Cette zone est réservée aux encadrants EAJ.<br>
-        Merci de saisir le code d’accès.
+        <strong>Outil interne : génération du planning.</strong><br>
+        Rien n’est publié automatiquement, rien n’est enregistré côté serveur.<br>
+        Code requis uniquement pour éviter les clics accidentels.
       </p>
       <input type="password" id="admin-code-input" placeholder="Code d’accès" />
       <div class="admin-modal-actions">
@@ -133,30 +120,35 @@
 
   <!-- ✈️ Retour en haut -->
   <button id="back-to-top" class="back-to-top air-patch" type="button" aria-label="Retour en haut">✈️</button>
-
-  <!-- 🍔 Menu -->
-  <div id="app-menu" class="app-menu" aria-hidden="true">
-    <div class="app-menu-backdrop" data-menu-close></div>
-    <aside class="app-menu-panel" role="dialog" aria-modal="true" aria-label="Menu">
-      <div class="app-menu-header">
-        <div class="app-menu-title">Menu</div>
-        <button class="app-menu-close" type="button" data-menu-close aria-label="Fermer le menu">✕</button>
+  <!-- ⋯ Menu compact -->
+  <div id="app-menu" class="menu-popover" aria-hidden="true">
+    <div class="menu-popover-panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="menu-popover-header">
+        <div class="menu-popover-title">Menu</div>
+        <button class="menu-popover-close" type="button" data-menu-close aria-label="Fermer le menu">✕</button>
       </div>
 
-      <nav class="app-menu-nav">
-        <button class="menu-item" type="button" data-action="scroll-projects">📁 Nos projets</button>
+      <label class="menu-field">
+        <span>Nos projets</span>
+        <select id="projects-select" aria-label="Nos projets">
+          <option value="">Ouvrir un projet…</option>
+          <option value="https://eaj-ba116.github.io/HenriFertet2025/">2025 – Henri Fertet</option>
+          <option value="https://eaj-ba116.github.io/operationsagittaire/">2025 – Opération Sagittaire</option>
+        </select>
+      </label>
+
+      <nav class="menu-buttons" aria-label="Actions">
         <button class="menu-item" type="button" data-action="open-about">ℹ️ Version & changelog</button>
         <button class="menu-item" type="button" data-action="open-admin">🔧 Accès admin</button>
-        <button class="menu-item" type="button" data-action="open-contact">✉️ Signaler un bug / Contact</button>
+        <button class="menu-item" type="button" data-action="open-contact">📲 Bug / Contact</button>
       </nav>
 
-      <div class="app-menu-footer">
-        <div class="muted">Version 1.2.0 • 25/01/2026</div>
-      </div>
-    </aside>
+      <div class="menu-popover-footer muted">Version 1.2.1 • 25/01/2026</div>
+    </div>
   </div>
 
   <!-- ℹ️ Modal À propos / Changelog -->
+
   <div id="about-modal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" data-modal-close="about-modal"></div>
     <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="Version et changelog">
@@ -166,17 +158,17 @@
       </div>
 
       <div class="modal-body">
-        <p class="modal-meta"><strong>Programme EAJ – BA 116</strong><br>Version <strong>1.2.0</strong> • 25/01/2026 • Codé par <strong>Yoann</strong></p>
+        <p class="modal-meta"><strong>Programme EAJ – BA 116</strong><br>Version <strong>1.2.1</strong> • 25/01/2026 • Codé par <strong>Yoann</strong></p>
 
         <div class="changelog">
           <div class="changelog-title">Dernières modifications</div>
           <ul>
-            <li>Nouveau header + menu hamburger (navigation plus claire)</li>
-            <li>Section “Nos projets” (au lieu du menu déroulant)</li>
-            <li>Correctifs : retour haut + accès admin</li>
-            <li>Légende dépliable (fermée par défaut)</li>
-            <li>Bannières programmables (dates début/fin)</li>
-          </ul>
+            <li>Correctif : “Afficher bannières” masque/affiche vraiment</li>
+            <li>Générateur : semaines réordonnées par date (ajout → bon endroit)</li>
+            <li>Générateur : bannières avec dates début (auto = aujourd’hui) / fin (optionnel)</li>
+            <li>Mobile : zoom désactivé + fin du “scroll à droite”</li>
+            <li>Correctif : fenêtre admin au-dessus des autres éléments</li>
+</ul>
         </div>
       </div>
     </div>
@@ -192,15 +184,22 @@
       </div>
 
       <div class="modal-body">
-        <p class="modal-meta">Décris le souci, puis copie le message (à coller dans ton canal habituel).</p>
+        <p class="modal-meta">Décris le souci : la version et le lien de la page seront ajoutés automatiquement. Tu peux ensuite ouvrir WhatsApp ou copier le message.</p>
 
         <label class="modal-field">
           <span>Message</span>
-          <textarea id="contact-message" rows="6" placeholder="Ex: Sur mobile, le filtre EAJ2 ne masque pas les activités communes…"></textarea>
+          <textarea id="contact-message" rows="6" placeholder="Ex: Sur mobile, le filtre EAJ2 ne masque pas les activités communes…
+
+Étapes pour reproduire :
+1) …
+2) …
+Résultat obtenu : …
+Résultat attendu : …"></textarea>
         </label>
 
         <div class="modal-actions">
-          <button id="copy-contact" class="btn-primary" type="button">Copier le message</button>
+          <button id="open-whatsapp" class="btn-primary" type="button">Ouvrir WhatsApp</button>
+          <button id="copy-contact" class="btn-secondary" type="button">Copier le message</button>
           <button class="btn-secondary" type="button" data-modal-close="contact-modal">Fermer</button>
         </div>
 

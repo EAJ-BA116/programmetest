@@ -62,6 +62,10 @@ body[data-theme="dark"] {
   font-weight: 600;
 }
 
+
+#alert-banner.has-banners {
+  display: block;
+}
 .alert-line {
   padding: 0.65rem 1rem;
   border-bottom: 1px solid rgba(0,0,0,0.08);
@@ -1019,7 +1023,7 @@ body[data-theme="light"] .back-to-top.air-patch {
 
 /* ---------- Toggle affichage bannières ---------- */
 #alert-banner.is-hidden {
-  display: none;
+  display: none !important;
 }
 
 .toggle-banners {
@@ -1364,3 +1368,232 @@ body[data-theme="light"] .back-to-top.air-patch {
 .btn-secondary{padding:.65rem .9rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
 .btn-secondary:hover{background:var(--bg-card-soft);}
 #copy-hint{margin-right:auto;color:var(--text-muted);font-size:.85rem;}
+
+
+/* =============================
+   v1.2.0 – Ajustements (25/01/2026)
+   ============================= */
+
+/* Header : éviter les règles globales sur <header> et réduire le logo */
+header.app-header{
+  max-width: 1100px;
+  margin: 0 auto 0.35rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  gap: 1rem;
+  padding: 1rem 1rem 0.65rem;
+  flex-wrap: wrap;
+}
+
+header.app-header .header-left{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 260px;
+  flex: 1;
+}
+
+header.app-header .app-logo{
+  width: 110px;
+  max-width: 140px;
+  height: auto;
+  border-radius: 18px;
+}
+
+header.app-header .site-title-text{
+  text-align: left;
+}
+
+header.app-header .site-title-text h1{
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--blue-main);
+}
+
+header.app-header .site-title-text p{
+  margin: 0.15rem 0 0.25rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+header.app-header .badge-time{
+  margin-top: 0.15rem;
+  padding: 0.28rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Bouton menu : compact (⋯) */
+header.app-header .btn-menu{
+  width: 42px;
+  height: 42px;
+  border-radius: 0.9rem;
+  font-size: 1.45rem;
+}
+
+/* Ligne d'explication des filtres */
+.filter-help{
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  opacity: 0.95;
+}
+
+/* Menu compact (popover) */
+.menu-popover{
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 85;
+  background: transparent; /* click dehors pour fermer */
+}
+
+.menu-popover.open{
+  display: block;
+}
+
+.menu-popover-panel{
+  position: absolute;
+  right: 1rem;
+  top: 78px;
+  width: min(360px, 92vw);
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 1rem;
+  padding: 0.9rem;
+  box-shadow: 0 20px 45px rgba(15,23,42,.45);
+}
+
+.menu-popover-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.menu-popover-title{
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.menu-popover-close{
+  width: 40px;
+  height: 40px;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-card);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.menu-popover-close:hover{
+  background: var(--bg-card-soft);
+}
+
+.menu-field{
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.menu-field span{
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.menu-field select{
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-card-soft);
+  color: var(--text-main);
+  outline: none;
+}
+
+.menu-field select:focus{
+  border-color: var(--blue-main);
+  box-shadow: 0 0 0 3px rgba(0,83,166,.18);
+}
+
+.menu-buttons{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.menu-popover-footer{
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+
+@media (max-width: 640px){
+  header.app-header{
+    padding: 0.85rem 0.9rem 0.55rem;
+  }
+
+  header.app-header .app-logo{
+    width: 88px;
+    border-radius: 16px;
+  }
+
+  header.app-header .site-title-text h1{
+    font-size: 1.2rem;
+  }
+
+  .menu-popover-panel{
+    left: 0.75rem;
+    right: 0.75rem;
+    top: 74px;
+    width: auto;
+  }
+}
+
+
+/* =============================
+   v1.2.1 – Correctifs affichage
+   ============================= */
+
+/* Empêche le décalage horizontal (mobile) */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Centre la légende (PC) comme le reste de la page */
+.legend-details {
+  width: min(960px, calc(100% - 2rem));
+  margin: 0.6rem auto 0.2rem;
+}
+
+/* Admin modal au-dessus du menu */
+.admin-modal { z-index: 220 !important; }
+.admin-modal-dialog { z-index: 221 !important; }
+.admin-modal-backdrop { z-index: 220 !important; }
+
+/* Bannières : le toggle doit toujours gagner */
+#alert-banner.is-hidden { display: none !important; }
+
+
+/* Generator – bannières (dates début/fin) */
+.banners-container{display:flex;flex-direction:column;gap:.6rem;margin-top:.6rem;}
+.banner-item{border:1px solid rgba(0,83,166,.25);background:var(--bg-card);border-radius:1rem;padding:.75rem;display:flex;flex-direction:column;gap:.55rem;}
+.banner-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.banner-item-emoji{height:40px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);padding:.2rem .6rem;}
+.banner-textarea{width:100%;min-height:72px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);padding:.6rem;resize:vertical;}
+.banner-targets{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.9rem;}
+.banner-targets label{display:inline-flex;align-items:center;gap:.25rem;padding:.25rem .45rem;border-radius:.7rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);}
+.banner-dates-row{gap:.8rem;}
+.banner-dates-label{font-weight:600;color:var(--text-muted);}
+.banner-date-field{display:flex;align-items:center;gap:.35rem;}
+.banner-date-field input{width:130px;max-width:42vw;height:38px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);padding:.2rem .55rem;}
+
+.app-menu{overflow:hidden;}
