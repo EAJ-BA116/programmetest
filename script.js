@@ -775,8 +775,7 @@ function initialiserProjectsMenu() {
   // Si le menu se ferme, on ferme aussi la liste
   if (menu) {
     const obs = new MutationObserver(() => {
-      if (!menu.classList.contains("open")) closeList();
-    });
+      closeList();});
     obs.observe(menu, { attributes: true, attributeFilter: ["class"] });
   }
 }

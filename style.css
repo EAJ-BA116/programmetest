@@ -1552,6 +1552,11 @@ header.app-header .btn-menu{
   padding-left: 0.35rem;
 }
 
+.menu-sublist[hidden]{
+  display: none !important;
+}
+
+
 .menu-subitem{
   width: 100%;
   display: flex;
