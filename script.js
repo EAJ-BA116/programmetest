@@ -378,7 +378,11 @@ function appliquerFiltre(nomGroupe) {
 
 function initialiserFiltres() {
   const boutons = document.querySelectorAll(".btn-filter");
-  if (!boutons.length) return;
+  // Sécurité : si les boutons n'existent pas, on affiche quand même les bannières "Tous".
+  if (!boutons.length) {
+    renderAlert("all");
+    return;
+  }
 
   const FILTERS_VALIDES = ["all", "EAJ1", "EAJ2", "EAJ3"];
   let filtreActuel = "all";
@@ -941,15 +945,21 @@ function initialiserContactCopy(){
 /* ---------- Init globale ---------- */
 
 renderToutesLesSemaines();
+
+// Toggle bannières d'abord, pour que le premier renderAlert (appelé par initialiserFiltres)
+// respecte l'état "Afficher bannières".
+initialiserBannerToggle();
+
+// Filtre (lit localStorage) + rend la bannière filtrée au bon groupe dès l'initialisation.
 initialiserFiltres();
+
 initialiserThemeToggle();
 renderLastUpdate();
-renderAlert();
-initialiserBannerToggle();
+
 initialiserMenu();
 initialiserModales();
 initialiserContactCopy();
-
 initialiserProjectsMenu();
+
 initialiserBackToTop();
 initialiserAdminModal();
