@@ -1036,7 +1036,10 @@ function initialiserClothesExchange(){
   const first = document.getElementById("clothes-firstname");
   const eaj = document.getElementById("clothes-eaj");
   const type = document.getElementById("clothes-type"); // hidden input (valeur)
-  const typeGrid = document.getElementById("clothes-type-grid");
+  const typeTrigger = document.getElementById("clothes-type-trigger");
+  const typeMenu = document.getElementById("clothes-type-menu");
+  const typeTriggerIcon = typeTrigger ? typeTrigger.querySelector(".dd-trigger-icon") : null;
+  const typeTriggerLabel = typeTrigger ? typeTrigger.querySelector(".dd-trigger-label") : null;
   const size = document.getElementById("clothes-size");
   const sizeWantedField = document.getElementById("clothes-size-wanted-field");
   const sizeWanted = document.getElementById("clothes-size-wanted");
@@ -1054,14 +1057,27 @@ function initialiserClothesExchange(){
     return r ? r.value : "";
   };
 
-  const setType = (val)=>{
+  const setType = (val, iconSrc)=>{
     type.value = val || "";
-    if(typeGrid){
-      typeGrid.querySelectorAll('.choice-btn').forEach(btn=>{
-        const isActive = (btn.getAttribute('data-value')||"") === type.value;
-        btn.classList.toggle('active', isActive);
-        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      });
+
+    // UI trigger
+    if(typeTriggerLabel){
+      typeTriggerLabel.textContent = type.value ? type.value : "Choisir un vêtement…";
+    }
+    if(typeTriggerIcon){
+      typeTriggerIcon.innerHTML = "";
+      if(iconSrc){
+        const img = document.createElement("img");
+        img.src = iconSrc;
+        img.alt = "";
+        typeTriggerIcon.appendChild(img);
+      }
+    }
+
+    // Fermer menu
+    if(typeMenu && !typeMenu.hidden){
+      typeMenu.hidden = true;
+      if(typeTrigger) typeTrigger.setAttribute("aria-expanded","false");
     }
   };
 
@@ -1159,6 +1175,49 @@ function initialiserClothesExchange(){
     }
   };
 
+
+  // Dropdown type de vêtement
+  const closeTypeMenu = ()=>{
+    if(typeMenu && !typeMenu.hidden){
+      typeMenu.hidden = true;
+      if(typeTrigger) typeTrigger.setAttribute("aria-expanded","false");
+    }
+  };
+
+  if(typeTrigger && typeMenu){
+    typeTrigger.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const willOpen = typeMenu.hidden;
+      // fermer les autres menus
+      closeTypeMenu();
+      if(willOpen){
+        typeMenu.hidden = false;
+        typeTrigger.setAttribute("aria-expanded","true");
+      }
+    });
+
+    typeMenu.querySelectorAll(".dd-item").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const val = btn.getAttribute("data-value") || "";
+        const ico = btn.querySelector("img") ? btn.querySelector("img").getAttribute("src") : "";
+        setType(val, ico);
+        updateButtons();
+      });
+    });
+
+    // click dehors / ESC
+    document.addEventListener("click", (e)=>{
+      if(!typeMenu.hidden){
+        const t = e.target;
+        if(typeTrigger.contains(t) || typeMenu.contains(t)) return;
+        closeTypeMenu();
+      }
+    });
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape") closeTypeMenu();
+    });
+  }
+
   // Mise à jour temps réel
   ["input","change"].forEach(evt=>{
     first.addEventListener(evt, updateButtons);
@@ -1168,16 +1227,6 @@ function initialiserClothesExchange(){
     document.querySelectorAll('input[name="clothes-reason"]').forEach(i=> i.addEventListener(evt, updateButtons));
   });
 
-  // Choix du type via boutons
-  if(typeGrid){
-    typeGrid.querySelectorAll('.choice-btn').forEach(btn=>{
-      const val = btn.getAttribute('data-value') || "";
-      btn.addEventListener('click', ()=>{
-        setType(val);
-        updateButtons();
-      });
-    });
-  }
 
   // Motif -> afficher/masquer "taille voulue"
   document.querySelectorAll('input[name="clothes-reason"]').forEach(i=>{
