@@ -1044,6 +1044,7 @@ function initialiserContactCopy(){
 
 function initialiserClothesExchange(){
   const modalId = "clothes-modal";
+  const modal = document.getElementById(modalId);
   const first = document.getElementById("clothes-firstname");
   const eaj = document.getElementById("clothes-eaj");
   const type = document.getElementById("clothes-type"); // hidden input (valeur)
@@ -1097,6 +1098,14 @@ function initialiserClothesExchange(){
     const showWanted = reason === 'taille';
     sizeWantedField.hidden = !showWanted;
     if(!showWanted) sizeWanted.value = "";
+
+    // Style sélection (2 cartes côte à côte)
+    if(modal){
+      modal.querySelectorAll(".motif-item").forEach(lbl=>{
+        const inp = lbl.querySelector("input");
+        lbl.classList.toggle("is-selected", !!(inp && inp.checked));
+      });
+    }
   };
 
   const setHint = (msg)=>{ if(hint) hint.textContent = msg || ""; };
