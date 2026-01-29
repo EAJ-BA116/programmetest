@@ -1613,7 +1613,7 @@ header.app-header .btn-menu{
 
 
 /* =============================
-   v1.2.1 – Correctifs affichage
+   v1.3.0 – Échange vêtements (WhatsApp)
    ============================= */
 
 /* Empêche le décalage horizontal (mobile) */
@@ -1651,3 +1651,33 @@ html, body {
 .banner-date-field input{width:130px;max-width:42vw;height:38px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);padding:.2rem .55rem;}
 
 .app-menu{overflow:hidden;}
+
+
+/* 🧥 Modal échange vêtements */
+.grid-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 640px){
+  .grid-2{ grid-template-columns: 1fr; }
+}
+
+.radio-row{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  margin-top: 10px;
+}
+.radio-row input{ transform: translateY(1px); }
+
+.field-hint{
+  display:block;
+  margin-top: 6px;
+  font-size: .85rem;
+  opacity: .75;
+}

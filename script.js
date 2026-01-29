@@ -13,8 +13,8 @@ const TYPES_ACTIVITE = {
   autre:          { label: "Autres",            emoji: "✨",  color: "#64748b" }
 };
 
-// v1.2.0 — Meta
-const APP_VERSION = "1.2.1";
+// v1.3.0 — Meta
+const APP_VERSION = "1.3.0";
 
 // 📲 WhatsApp (format international sans + ni espaces). Exemple : 33612345678
 // Laisse vide si tu ne veux pas afficher le bouton.
@@ -822,6 +822,7 @@ function closeOverlaysOnScroll(){
   // Modales standard
   closeModalById("about-modal");
   closeModalById("contact-modal");
+  closeModalById("clothes-modal");
 
   // Modale admin
   const admin = document.getElementById("admin-modal");
@@ -942,6 +943,7 @@ function initialiserMenu(){
       if(act === "open-about"){ openModalById("about-modal"); return; }
       if(act === "open-contact"){ openModalById("contact-modal"); return; }
       if(act === "open-admin"){ const a=document.getElementById("admin-link"); if(a) a.click(); return; }
+      if(act === "open-clothes"){ openModalById("clothes-modal"); return; }
     });
   });
 
@@ -1027,6 +1029,150 @@ function initialiserContactCopy(){
   }
 }
 
+
+
+function initialiserClothesExchange(){
+  const modalId = "clothes-modal";
+  const first = document.getElementById("clothes-firstname");
+  const eaj = document.getElementById("clothes-eaj");
+  const type = document.getElementById("clothes-type");
+  const size = document.getElementById("clothes-size");
+  const btnWa = document.getElementById("clothes-whatsapp");
+  const btnCopy = document.getElementById("clothes-copy");
+  const hint = document.getElementById("clothes-hint");
+
+  if(!first || !eaj || !type || !btnWa || !btnCopy) return;
+
+  const phone = String(WHATSAPP_PHONE||"").trim();
+  const phoneOk = /^\d{8,15}$/.test(phone);
+
+  const getReason = ()=>{
+    const r = document.querySelector('input[name="clothes-reason"]:checked');
+    return r ? r.value : "";
+  };
+
+  const setHint = (msg)=>{ if(hint) hint.textContent = msg || ""; };
+
+  const resetForm = ()=>{
+    first.value = "";
+    eaj.value = "";
+    type.value = "";
+    size.value = "";
+    document.querySelectorAll('input[name="clothes-reason"]').forEach(i=> i.checked=false);
+    setHint("");
+    updateButtons();
+  };
+
+  const buildPayload = ()=>{
+    const prenom = (first.value||"").trim();
+    const groupe = (eaj.value||"").trim();
+    const vetement = (type.value||"").trim();
+    const reason = getReason();
+    const taille = (size.value||"").trim();
+
+    const reasonLabel = reason === "taille"
+      ? "Échange de taille"
+      : "Échange car cassé / abîmé";
+
+    let msg =
+`Bonjour Yoann,\n\n` +
+`Je souhaite faire un échange de vêtements.\n\n` +
+`• Prénom : ${prenom || "(à compléter)"}\n` +
+`• Groupe : ${groupe || "(à choisir)"}\n` +
+`• Vêtement : ${vetement || "(à choisir)"}\n` +
+`• Motif : ${reason ? reasonLabel : "(à choisir)"}\n`;
+
+    msg += `• Taille : ${taille || "(à compléter)"}\n`;
+
+    msg += `\nMerci.`;
+    return msg;
+  };
+
+  const isValid = ()=>{
+    const prenomOk = (first.value||"").trim().length > 0;
+    const eajOk = (eaj.value||"").trim().length > 0;
+    const typeOk = (type.value||"").trim().length > 0;
+    const reason = getReason();
+    if(!prenomOk || !eajOk || !typeOk || !reason) return false;
+
+    // taille obligatoire dans tous les cas
+    const sizeOk = (size.value||"").trim().length > 0;
+    return sizeOk;
+  };
+
+  const updateButtons = ()=>{
+    const ok = isValid();
+    const canWa = phoneOk && ok;
+
+    btnCopy.disabled = !ok;
+    btnCopy.style.opacity = ok ? "" : "0.55";
+    btnCopy.style.cursor = ok ? "" : "not-allowed";
+
+    btnWa.disabled = !canWa;
+    btnWa.style.opacity = canWa ? "" : "0.55";
+    btnWa.style.cursor = canWa ? "" : "not-allowed";
+    if(!phoneOk){
+      btnWa.title = "Numéro WhatsApp non configuré (WHATSAPP_PHONE dans script.js)";
+    }else if(!ok){
+      btnWa.title = "Complète les champs obligatoires";
+    }else{
+      btnWa.title = "";
+    }
+  };
+
+  // Mise à jour temps réel
+  ["input","change"].forEach(evt=>{
+    first.addEventListener(evt, updateButtons);
+    eaj.addEventListener(evt, updateButtons);
+    type.addEventListener(evt, updateButtons);
+    size.addEventListener(evt, updateButtons);
+    document.querySelectorAll('input[name="clothes-reason"]').forEach(i=> i.addEventListener(evt, updateButtons));
+  });
+
+  // Copier
+  btnCopy.addEventListener("click", async ()=>{
+    if(!isValid()) { setHint("Complète les champs obligatoires."); return; }
+    const payload = buildPayload();
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(payload);
+      }else{
+        const tmp = document.createElement("textarea");
+        tmp.value = payload;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand("copy");
+        tmp.remove();
+      }
+      setHint("Message copié. ✅");
+    }catch(e){
+      setHint("Impossible de copier automatiquement.");
+    }
+  });
+
+  // WhatsApp
+  btnWa.addEventListener("click", ()=>{
+    if(!isValid()) { setHint("Complète les champs obligatoires."); return; }
+    if(!phoneOk) { setHint("Numéro WhatsApp non configuré."); return; }
+    const payload = buildPayload();
+    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(payload)}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+    setHint("WhatsApp ouvert. 📲");
+  });
+
+  // Reset à l'ouverture/fermeture de la modale
+  const modal = document.getElementById(modalId);
+  if(modal){
+    // Quand on ouvre
+    const obs = new MutationObserver(()=>{
+      if(modal.classList.contains("open")) resetForm();
+    });
+    obs.observe(modal, { attributes:true, attributeFilter:["class"] });
+  }
+
+  updateButtons();
+}
+
 /* ---------- Init globale ---------- */
 
 renderToutesLesSemaines();
@@ -1045,6 +1191,7 @@ initialiserMenu();
 initialiserModales();
 initialiserCloseOnScroll();
 initialiserContactCopy();
+initialiserClothesExchange();
 initialiserProjectsMenu();
 
 initialiserBackToTop();
