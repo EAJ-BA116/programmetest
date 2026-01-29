@@ -1035,13 +1035,16 @@ function initialiserClothesExchange(){
   const modalId = "clothes-modal";
   const first = document.getElementById("clothes-firstname");
   const eaj = document.getElementById("clothes-eaj");
-  const type = document.getElementById("clothes-type");
+  const type = document.getElementById("clothes-type"); // hidden input (valeur)
+  const typeGrid = document.getElementById("clothes-type-grid");
   const size = document.getElementById("clothes-size");
+  const sizeWantedField = document.getElementById("clothes-size-wanted-field");
+  const sizeWanted = document.getElementById("clothes-size-wanted");
   const btnWa = document.getElementById("clothes-whatsapp");
   const btnCopy = document.getElementById("clothes-copy");
   const hint = document.getElementById("clothes-hint");
 
-  if(!first || !eaj || !type || !btnWa || !btnCopy) return;
+  if(!first || !eaj || !type || !btnWa || !btnCopy || !size || !sizeWantedField || !sizeWanted) return;
 
   const phone = String(WHATSAPP_PHONE||"").trim();
   const phoneOk = /^\d{8,15}$/.test(phone);
@@ -1051,14 +1054,34 @@ function initialiserClothesExchange(){
     return r ? r.value : "";
   };
 
+  const setType = (val)=>{
+    type.value = val || "";
+    if(typeGrid){
+      typeGrid.querySelectorAll('.choice-btn').forEach(btn=>{
+        const isActive = (btn.getAttribute('data-value')||"") === type.value;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
+  };
+
+  const updateReasonUI = ()=>{
+    const reason = getReason();
+    const showWanted = reason === 'taille';
+    sizeWantedField.hidden = !showWanted;
+    if(!showWanted) sizeWanted.value = "";
+  };
+
   const setHint = (msg)=>{ if(hint) hint.textContent = msg || ""; };
 
   const resetForm = ()=>{
     first.value = "";
     eaj.value = "";
-    type.value = "";
+    setType("");
     size.value = "";
+    sizeWanted.value = "";
     document.querySelectorAll('input[name="clothes-reason"]').forEach(i=> i.checked=false);
+    updateReasonUI();
     setHint("");
     updateButtons();
   };
@@ -1069,20 +1092,29 @@ function initialiserClothesExchange(){
     const vetement = (type.value||"").trim();
     const reason = getReason();
     const taille = (size.value||"").trim();
+    const tailleVoulue = (sizeWanted.value||"").trim();
 
     const reasonLabel = reason === "taille"
       ? "Échange de taille"
       : "Échange car cassé / abîmé";
 
+    const intro = reason === 'taille'
+      ? "Je souhaite faire un échange de taille pour un vêtement."
+      : "Je souhaite faire un échange de vêtements (cassé / abîmé).";
+
     let msg =
 `Bonjour Yoann,\n\n` +
-`Je souhaite faire un échange de vêtements.\n\n` +
+`${intro}\n\n` +
 `• Prénom : ${prenom || "(à compléter)"}\n` +
 `• Groupe : ${groupe || "(à choisir)"}\n` +
 `• Vêtement : ${vetement || "(à choisir)"}\n` +
 `• Motif : ${reason ? reasonLabel : "(à choisir)"}\n`;
 
-    msg += `• Taille : ${taille || "(à compléter)"}\n`;
+    msg += `• Taille du vêtement à échanger : ${taille || "(à compléter)"}\n`;
+
+    if(reason === 'taille'){
+      msg += `• Taille voulue : ${tailleVoulue || "(à compléter)"}\n`;
+    }
 
     msg += `\nMerci.`;
     return msg;
@@ -1097,7 +1129,14 @@ function initialiserClothesExchange(){
 
     // taille obligatoire dans tous les cas
     const sizeOk = (size.value||"").trim().length > 0;
-    return sizeOk;
+    if(!sizeOk) return false;
+
+    // si échange de taille, taille voulue obligatoire
+    if(reason === 'taille'){
+      const wantedOk = (sizeWanted.value||"").trim().length > 0;
+      return wantedOk;
+    }
+    return true;
   };
 
   const updateButtons = ()=>{
@@ -1124,9 +1163,28 @@ function initialiserClothesExchange(){
   ["input","change"].forEach(evt=>{
     first.addEventListener(evt, updateButtons);
     eaj.addEventListener(evt, updateButtons);
-    type.addEventListener(evt, updateButtons);
     size.addEventListener(evt, updateButtons);
+    sizeWanted.addEventListener(evt, updateButtons);
     document.querySelectorAll('input[name="clothes-reason"]').forEach(i=> i.addEventListener(evt, updateButtons));
+  });
+
+  // Choix du type via boutons
+  if(typeGrid){
+    typeGrid.querySelectorAll('.choice-btn').forEach(btn=>{
+      const val = btn.getAttribute('data-value') || "";
+      btn.addEventListener('click', ()=>{
+        setType(val);
+        updateButtons();
+      });
+    });
+  }
+
+  // Motif -> afficher/masquer "taille voulue"
+  document.querySelectorAll('input[name="clothes-reason"]').forEach(i=>{
+    i.addEventListener('change', ()=>{
+      updateReasonUI();
+      updateButtons();
+    });
   });
 
   // Copier

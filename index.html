@@ -247,16 +247,37 @@ Résultat attendu : …"></textarea>
 
         <label class="modal-field">
           <span>Type de vêtement</span>
-          <select id="clothes-type">
-            <option value="">Choisir…</option>
-            <option value="Combinaison de vol">Combinaison de vol</option>
-            <option value="Parka">Parka</option>
-            <option value="Bombers">Bombers</option>
-            <option value="T-shirt">T-shirt</option>
-            <option value="Short">Short</option>
-            <option value="Veste de survêtement">Veste de survêtement</option>
-            <option value="Pantalon de sport">Pantalon de sport</option>
-          </select>
+          <input id="clothes-type" type="hidden" value="" />
+          <div id="clothes-type-grid" class="choice-grid" role="listbox" aria-label="Type de vêtement">
+            <button type="button" class="choice-btn" data-value="Combinaison de vol" role="option" aria-selected="false">
+              <span class="icon">🧑‍✈️</span><span class="label">Combinaison de vol</span>
+            </button>
+            <button type="button" class="choice-btn" data-value="Parka" role="option" aria-selected="false">
+              <span class="icon">🧥</span><span class="label">Parka</span>
+            </button>
+            <button type="button" class="choice-btn" data-value="Bombers" role="option" aria-selected="false">
+              <span class="icon">🧥</span><span class="label">Bombers</span>
+            </button>
+            <button type="button" class="choice-btn" data-value="T-shirt" role="option" aria-selected="false">
+              <span class="icon">👕</span><span class="label">T-shirt</span>
+            </button>
+            <button type="button" class="choice-btn" data-value="Short" role="option" aria-selected="false">
+              <span class="icon">🩳</span><span class="label">Short</span>
+            </button>
+            <button type="button" class="choice-btn" data-value="Veste de survêtement" role="option" aria-selected="false">
+              <span class="icon">🧥</span><span class="label">Veste de survêtement</span>
+            </button>
+            <button type="button" class="choice-btn" data-value="Pantalon de sport" role="option" aria-selected="false">
+              <span class="icon">👖</span><span class="label">Pantalon de sport</span>
+            </button>
+          </div>
+          <small class="field-hint">Choisis un type.</small>
+        </label>
+
+        <label class="modal-field">
+          <span>Taille du vêtement à échanger</span>
+          <input id="clothes-size" type="text" placeholder="Ex : S, M, L, XL, 38, 42…" />
+          <small class="field-hint">Obligatoire.</small>
         </label>
 
         <fieldset class="modal-field">
@@ -271,10 +292,10 @@ Résultat attendu : …"></textarea>
           </label>
         </fieldset>
 
-        <label class="modal-field">
-          <span>Taille</span>
-          <input id="clothes-size" type="text" placeholder="Ex : S, M, L, XL, 38, 42…" />
-          <small class="field-hint">Obligatoire.</small>
+        <label id="clothes-size-wanted-field" class="modal-field" hidden>
+          <span>Taille voulue</span>
+          <input id="clothes-size-wanted" type="text" placeholder="Ex : M (taille souhaitée)" />
+          <small class="field-hint">Obligatoire si échange de taille.</small>
         </label>
 
         <div class="modal-actions">

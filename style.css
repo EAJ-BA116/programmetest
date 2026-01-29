@@ -1681,3 +1681,17 @@ html, body {
   font-size: .85rem;
   opacity: .75;
 }
+
+/* --- Choix stylés (ex: Échange vêtements) --- */
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin-top:.35rem;}
+.choice-btn{display:flex;align-items:center;gap:.55rem;padding:.65rem .75rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);cursor:pointer;text-align:left;}
+.choice-btn .icon{width:1.4rem;display:inline-flex;justify-content:center;}
+.choice-btn .label{flex:1;min-width:0;}
+.choice-btn:hover{filter:brightness(1.02);}
+.choice-btn:active{transform:translateY(1px);}
+.choice-btn.active{border-color:var(--blue-main);box-shadow:0 0 0 3px rgba(0,83,166,.18);}
+.choice-btn:focus-visible{outline:3px solid rgba(0,83,166,.35);outline-offset:2px;}
+
+@media (max-width: 420px){
+  .choice-grid{grid-template-columns:1fr;}
+}
