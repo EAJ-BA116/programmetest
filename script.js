@@ -1288,7 +1288,6 @@ function initialiserClothesExchange(){
   });
 
   // Reset à l'ouverture/fermeture de la modale
-  const modal = document.getElementById(modalId);
   if(modal){
     // Quand on ouvre
     const obs = new MutationObserver(()=>{
