@@ -1659,6 +1659,31 @@ html, body {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+/* Motif : 2 puces + texte (pas de gros cadres) */
+.motif-list{
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  margin-top: 10px;
+}
+.motif-item{
+  display:flex;
+  align-items:flex-start;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.motif-item::before{
+  content: "•";
+  opacity: .75;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+.motif-item input{ margin-top: 2px; }
+.motif-text{ display:block; }
 @media (max-width: 640px){
   .grid-2{ grid-template-columns: 1fr; }
 }
