@@ -8,728 +8,340 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Générateur de programme EAJ – BA 116</title>
-  <link id="main-style" rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/x-icon" href="images/eaj.ico">
-<link rel="shortcut icon" type="image/x-icon" href="images/eaj.ico">
-  <!-- On réutilise ton style principal -->
-  <style>
-    main.generator-main {
-      max-width: 1000px;
-      margin: 0 auto;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
 
-    .generator-header-text {
-      max-width: 1000px;
-      margin: 0 auto 0.5rem;
-      text-align: left;
-    }
+  <title>Programme EAJ – BA 116</title>
 
-    .generator-header-text h1 {
-      font-size: 1.4rem;
-      color: var(--blue-main);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
+  <!-- Couleur navigateur -->
+  <meta name="theme-color" content="#0053a6">
 
-    .generator-header-text p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
+  <!-- PWA Android -->
+  <link rel="manifest" href="manifest.json?v=1.4.0">
 
-    .note {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 0.3rem;
-    }
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="EAJ 116">
+  <link rel="apple-touch-icon" href="images/logo_eaj192.png?v=1.4.0">
 
-    .bar-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.4rem;
-    }
+  <!-- Icônes Android -->
+  <link rel="icon" type="image/png" sizes="192x192" href="images/logo_eaj192.png?v=1.4.0">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/logo_eaj512.png?v=1.4.0">
 
-    .btn {
-      padding: 0.45rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid var(--blue-soft);
-      background: var(--bg-card);
-      color: var(--blue-main);
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: 0.15s;
-    }
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/eaj.ico?v=1.4.0">
 
-    .btn-primary {
-      background: var(--blue-main);
-      color: #ffffff;
-    }
-
-    .btn-secondary {
-      border-color: var(--border-soft);
-      color: var(--text-main);
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(15, 23, 42, 0.16);
-    }
-
-    .btn-danger {
-      border-color: #b91c1c;
-      color: #b91c1c;
-    }
-
-    .btn-small {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.6rem;
-    }
-
-    .config-block,
-    .week-form {
-      background: var(--bg-card);
-      border-radius: 0.9rem;
-      border: 1px solid var(--border-soft);
-      padding: 0.9rem 1rem;
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
-    }
-
-    .config-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--blue-main);
-      margin-bottom: 0.5rem;
-    }
-
-    .config-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 0.7rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .banners-container {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      margin-top: 0.2rem;
-    }
-
-    .banner-item {
-      border: 1px dashed var(--border-soft);
-      border-radius: 0.75rem;
-      padding: 0.6rem;
-      background: var(--bg-card-soft);
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-    }
-
-    .banner-row {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .banner-targets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-      font-size: 0.8rem;
-    }
-
-    .banner-targets label {
-      display: inline-flex;
-      gap: 0.25rem;
-      align-items: center;
-      color: var(--text-main);
-    }
-
-    
-    .banner-dates-row {
-      gap: 0.55rem;
-      align-items: center;
-    }
-
-    .banner-dates-label {
-      font-size: 0.8rem;
-      opacity: 0.85;
-    }
-
-    .banner-date-field {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.8rem;
-    }
-
-    .banner-date-field input {
-      width: 140px;
-    }
-.field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.18rem;
-      font-size: 0.8rem;
-    }
-
-    .field label {
-      color: var(--text-muted);
-    }
-
-    input[type="text"],
-    select,
-    textarea {
-      font-family: inherit;
-      font-size: 0.85rem;
-      padding: 0.3rem 0.5rem;
-      border-radius: 0.45rem;
-      border: 1px solid var(--border-soft);
-      background: var(--bg-card-soft);
-      color: var(--text-main);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 2.3rem;
-    }
-
-    .banner-textarea {
-      min-height: 4.5rem; /* zone de bannière plus grande */
-    }
-
-    .field-inline {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .weeks-container {
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-    }
-
-    .week-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .week-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--blue-main);
-    }
-
-    .week-header-actions {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .week-fields {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0.7rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .groups-wrapper {
-      border-top: 1px solid var(--border-soft);
-      padding-top: 0.7rem;
-      margin-top: 0.4rem;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.7rem;
-    }
-
-    @media (min-width: 900px) {
-      .groups-wrapper {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    .group-form {
-      border-radius: 0.7rem;
-      border: 1px dashed var(--border-soft);
-      padding: 0.6rem 0.7rem;
-      background: #f9fafb;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    body[data-theme="dark"] .group-form {
-      background: var(--bg-card-soft);
-    }
-
-    .group-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .group-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--blue-main);
-    }
-
-    .group-toggle label {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .group-toggle input {
-      accent-color: var(--blue-main);
-    }
-
-    .group-fields {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      margin-top: 0.1rem;
-    }
-
-    .activities-block {
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-soft);
-      background: var(--bg-card);
-      padding: 0.4rem 0.45rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      margin-top: 0.2rem;
-    }
-
-    .activities-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .activity-row {
-      margin-top: 0.4rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      padding: 0.35rem 0.4rem;
-      border-radius: 0.4rem;
-      background: var(--bg-card-soft);
-    }
-
-    .activity-row-main {
-      display: grid;
-      grid-template-columns: 150px minmax(0, 1fr) auto;
-      gap: 0.3rem;
-      align-items: center;
-    }
-
-    .activity-extra {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.25rem;
-      margin-top: 0.25rem;
-      font-size: 0.75rem;
-    }
-
-    .activity-extra input {
-      font-size: 0.78rem;
-    }
-
-    .activity-extra-title {
-      font-weight: 500;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    /* Bloc activités communes */
-
-    .common-wrapper {
-      border-top: 1px solid var(--border-soft);
-      padding-top: 0.7rem;
-      margin-top: 0.6rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .common-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .common-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--blue-main);
-    }
-
-    .common-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .common-form {
-      border-radius: 0.7rem;
-      border: 1px dashed var(--border-soft);
-      padding: 0.6rem 0.7rem;
-      background: var(--bg-card-soft);
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .common-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .common-title-inner {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--blue-main);
-    }
-
-    .common-groups {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .common-groups label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .common-groups input {
-      accent-color: var(--blue-main);
-    }
-
-    /* Aperçu de la semaine */
-
-    .week-preview-container {
-      margin-top: 0.8rem;
-      padding-top: 0.6rem;
-      border-top: 1px dashed var(--border-soft);
-    }
-
-    .week-preview-title {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      margin-bottom: 0.4rem;
-    }
-
-    .week-edit-mode .week-preview-container {
-      opacity: 0.5;
-    }
-
-    .week-view-mode .week-fields,
-    .week-view-mode .groups-wrapper,
-    .week-view-mode .common-wrapper {
-      display: none;
-    }
-
-    /* JS output */
-
-    .output-block {
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .output-block label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    #output {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.78rem;
-      min-height: 220px;
-      width: 100%;
-      padding: 0.6rem 0.7rem;
-      border-radius: 0.6rem;
-      border: 1px solid var(--border-soft);
-      background: #0b1120;
-      color: #e5e7eb;
-      white-space: pre;
-    }
-
-    .small-info {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    footer {
-      max-width: 1000px;
-      margin: 1.5rem auto 0;
-    }
-
-    /* Modal de confirmation */
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
-
-    .modal {
-      background: var(--bg-card);
-      border-radius: 0.9rem;
-      padding: 1rem 1.2rem;
-      max-width: 320px;
-      width: 100%;
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.35);
-      border: 1px solid var(--border-soft);
-    }
-
-    .modal-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--blue-main);
-      margin-bottom: 0.4rem;
-    }
-
-    .modal-message {
-      font-size: 0.9rem;
-      color: var(--text-main);
-      margin-bottom: 0.8rem;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.5rem;
-    }
-
-
-    .generator-auth-panel {
-      width: min(760px, calc(100% - 2rem));
-      margin: 1.25rem auto;
-      padding: 1.1rem;
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      background: rgba(15, 23, 42, 0.72);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.25);
-    }
-
-    .generator-auth-panel h1 {
-      margin-top: 0;
-    }
-
-    .auth-form {
-      display: grid;
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-
-    .auth-form label {
-      display: grid;
-      gap: 0.35rem;
-      font-weight: 700;
-    }
-
-    .auth-status, .save-status {
-      margin-top: 0.75rem;
-      font-weight: 700;
-    }
-
-    .auth-status.ok, .save-status.ok { color: #86efac; }
-    .auth-status.error, .save-status.error { color: #fca5a5; }
-    .auth-status.info, .save-status.info { color: #bfdbfe; }
-
-
-    .hidden {
-      display: none !important;
-    }
-  </style>
+  <link id="main-style" rel="stylesheet" href="style.css?v=1.4.0">
 </head>
+
 <body data-theme="dark">
-  <header>
-    <div class="logo-wrapper">
-      <img src="images/logo_eaj.png" alt="Logo Escadrilles Air Jeunesse">
+  <!-- ⚠️ Bannières d’alerte -->
+  <div id="alert-banner"></div>
+
+  <header class="app-header">
+    <div class="header-left">
+      <img class="app-logo" src="images/logo_eaj.png" alt="Logo Escadrilles Air Jeunesse">
       <div class="site-title-text">
         <h1>Escadrilles Air Jeunesse</h1>
-        <p>BA 116 – Générateur de planning Supabase</p>
+        <p>BA 116 – Programme des activités</p>
+        <div class="badge-time">⏱ Mercredi après-midi • 14h–17h (et événements ponctuels)</div>
       </div>
     </div>
+
+    <button id="menu-toggle" class="btn-menu" type="button" aria-label="Ouvrir le menu" aria-controls="app-menu" aria-expanded="false">
+      ⋯
+    </button>
   </header>
 
-  <section id="generator-intro" class="generator-header-text hidden">
-    <h1>Générateur de programme EAJ</h1>
-    <p>Outil interne connecté à Supabase pour modifier le planning affiché sur le site public.</p>
-    <p class="note">
-      ✅ Les modifications sont enregistrées dans Supabase et deviennent visibles presque immédiatement sur le site public.<br>
-      Le bouton d’export <code>planning.js</code> reste disponible uniquement comme sauvegarde de secours.
-    </p>
-  </section>
-
-  <section id="auth-panel" class="generator-auth-panel">
-    <h1>Connexion administrateur</h1>
-    <p>Le site public reste accessible sans compte. Cette connexion sert uniquement à modifier le planning.</p>
-
-    <form id="auth-form" class="auth-form">
-      <label>
-        Email Supabase
-        <input type="email" id="auth-email" autocomplete="username" placeholder="prenom.nom@email.fr" required />
-      </label>
-      <label>
-        Mot de passe
-        <input type="password" id="auth-password" autocomplete="current-password" placeholder="Mot de passe" required />
-      </label>
-      <button class="btn btn-primary" type="submit">🔐 Se connecter</button>
-    </form>
-
-    <div id="auth-status" class="auth-status" aria-live="polite"></div>
-    <button id="auth-logout" class="btn btn-small hidden" type="button">Se déconnecter</button>
-  </section>
-
-
-  <main id="generator-app" class="generator-main hidden">
-    <!-- CONFIG GENERALE (ALERTE + DERNIERE MISE A JOUR) -->
-    <section class="config-block">
-      <div class="config-title">Configuration générale</div>
-      <div class="config-grid">
-        <div class="field full">
-          <label>Bannières d’alerte</label>
-          <div class="field-inline">
-            <input type="checkbox" id="banner-actif" checked />
-            <span>Activer les bannières</span>
-          </div>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; margin-top:0.35rem;">
-            <button class="btn btn-small" type="button" id="btn-add-banner">➕ Ajouter une bannière</button>
-            <span class="note">Chaque bannière peut viser EAJ1, EAJ2, EAJ3, ou une combinaison.</span>
-          </div>
-          <div id="banners-container" class="banners-container"></div>
-        </div>
-
-        <div class="field">
-          <label>Dernière mise à jour – Auteur</label>
-          <input type="text" id="lastupdate-auteur" value="Yoann" />
-        </div>
-       <div class="field">
-  <label>Dernière mise à jour – Date</label>
-  <input type="text" id="lastupdate-date" placeholder="JJ/MM/AAAA" maxlength="10" />
-  <span class="note">Saisis une date (ou laisse vide = date du jour).</span>
-</div>
-
-      </div>
-    </section>
-
-    <div class="bar-actions">
-      <button class="btn btn-primary" type="button" id="btn-add-week">➕ Ajouter une semaine</button>
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <button class="btn" type="button" id="btn-generate">🧩 Générer le code JS</button>
-        <button class="btn btn-primary" type="button" id="btn-save">💾 Enregistrer dans Supabase</button>
-        <button class="btn" type="button" id="btn-export">⬇️ Export planning.js secours</button>
-      </div>
+  <!-- Barre filtres + options -->
+  <div id="filter-bar" role="navigation" aria-label="Filtres">
+    <div id="filter-buttons">
+      <button class="btn-filter" data-filter="all">Tous</button>
+      <button class="btn-filter" data-filter="EAJ1">EAJ1</button>
+      <button class="btn-filter" data-filter="EAJ2">EAJ2</button>
+      <button class="btn-filter" data-filter="EAJ3">EAJ3</button>
     </div>
 
-    <div id="weeks-container" class="weeks-container">
-      <!-- Les semaines seront ajoutées ici en JS -->
-    </div>
-
-    <div class="output-block">
-      <label for="output">
-        Aperçu / sauvegarde de secours <code>planning.js</code> :
+    <div class="filter-actions">
+      <label class="toggle-banners" title="Masquer/afficher les bannières (non mémorisé)">
+        <input type="checkbox" id="banner-toggle" checked>
+        <span>Afficher bannières</span>
       </label>
-      <textarea id="output" readonly placeholder="// Le code apparaîtra ici après clic sur “Visualiser” ou “Générer le code JS”"></textarea>
-      <p class="small-info">
-        💾 Le bouton principal enregistre maintenant dans Supabase. Cet aperçu sert de sauvegarde manuelle si besoin.
-      </p>
-      <p id="save-status" class="save-status" aria-live="polite"></p>
+
+      <button id="theme-toggle" class="btn-theme" type="button">🌙 Mode sombre</button>
     </div>
+    <div class="filter-help">💡 Filtres : sélectionne un groupe pour afficher ses activités. “Tous” affiche tout (y compris les activités communes).</div>
+  </div>
+
+  <!-- 🎨 Légende (dépliable, fermée par défaut) -->
+  <details class="legend-details" id="legend">
+    <summary>🎨 Légende des activités</summary>
+    <div class="legend-line">
+      📘 BIA &nbsp;•&nbsp;
+      🏃‍♂️ Sport &nbsp;•&nbsp;
+      🏛️ Visite &nbsp;•&nbsp;
+      🛠️ Projet &nbsp;•&nbsp;
+      ✈️ Aéromodélisme &nbsp;•&nbsp;
+      🛸 Drone &nbsp;•&nbsp;
+      🎯 Tir &nbsp;•&nbsp;
+      🤝 Rencontres &nbsp;•&nbsp;
+      🕯️ Devoir de mémoire &nbsp;•&nbsp;
+      🎖️ Cérémonie &nbsp;•&nbsp;
+      ✨ Autres
+    </div>
+  </details>
+
+  <main class="container">
+<div id="week-container"></div>
   </main>
 
+  <!-- ✅ Bas de page -->
   <footer>
-    <a href="index.html" class="back-btn">← Retour</a>
-    <p><br></p>
-    <div class="footer-line">Outil interne – EAJ BA 116</div>
-    
+    <div class="footer-line">EAJ BA 116 – 2026</div>
+    <div class="footer-line" id="last-update"></div>
+    <div class="footer-line footer-version">Version 1.4.0 du 22/05/2026 • Codé par Yoann</div>
+    <div class="footer-line">
+      <a href="#" id="admin-link" class="footer-link footer-link-admin">🔧 Accès administration</a>
+    </div>
   </footer>
 
-  <button id="back-to-top" class="back-to-top air-patch" type="button" aria-label="Retour en haut">
-    ✈️
-  </button>
+  <!-- 🔐 Fenêtre modale code admin -->
+  <div id="admin-modal" class="admin-modal" aria-hidden="true">
+    <div class="admin-modal-backdrop"></div>
+    <div class="admin-modal-dialog">
+      <h2>Accès administrateur</h2>
+      <p class="admin-modal-text">
+        <strong>Outil interne : modification du planning.</strong><br>
+        Le générateur est maintenant protégé par une connexion Supabase.<br>
+        Les visiteurs du site public n’ont aucun compte à créer.
+      </p>
+      
+      <div class="admin-modal-actions">
+        <button type="button" id="admin-cancel" class="btn-admin btn-admin-secondary">Annuler</button>
+        <button type="button" id="admin-validate" class="btn-admin btn-admin-primary">Ouvrir le générateur</button>
+      </div>
+      <p class="admin-error" id="admin-error" style="display:none;"></p>
+    </div>
+  </div>
 
-  <!-- Modal de confirmation -->
-  <div id="modal-overlay" class="modal-overlay hidden">
-    <div class="modal">
-      <div class="modal-title" id="modal-title"></div>
-      <div class="modal-message" id="modal-message"></div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-small btn-secondary" id="modal-cancel">Annuler</button>
-        <button type="button" class="btn btn-small btn-danger" id="modal-confirm">Confirmer</button>
+  <!-- ✈️ Retour en haut -->
+  <button id="back-to-top" class="back-to-top air-patch" type="button" aria-label="Retour en haut">✈️</button>
+  <!-- ⋯ Menu compact -->
+  <div id="app-menu" class="menu-popover" aria-hidden="true">
+    <div class="menu-popover-panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="menu-popover-header">
+        <div class="menu-popover-title">Menu</div>
+        <button class="menu-popover-close" type="button" data-menu-close aria-label="Fermer le menu">✕</button>
+      </div>
+
+      <div class="menu-group">
+        <button id="projects-btn" class="menu-item menu-item-accordion" type="button" aria-expanded="false" aria-controls="projects-list">
+          🛩️ Nos projets
+          <span class="menu-chevron" aria-hidden="true">▾</span>
+        </button>
+
+        <div id="projects-list" class="menu-sublist" hidden>
+          <a class="menu-subitem" href="https://eaj-ba116.github.io/HenriFertet2025/" target="_blank" rel="noopener noreferrer">2025 – Henri Fertet <span aria-hidden="true">↗</span></a>
+          <a class="menu-subitem" href="https://eaj-ba116.github.io/operationsagittaire/" target="_blank" rel="noopener noreferrer">2025 – Opération Sagittaire <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+
+      <nav class="menu-buttons" aria-label="Actions">
+        <button class="menu-item" type="button" data-action="open-clothes">🧥 Échange vêtements</button>
+        <button class="menu-item" type="button" data-action="open-contact">📲 Bug / Contact</button>
+        <button class="menu-item" type="button" data-action="open-admin">🔧 Accès admin</button>
+        <button class="menu-item" type="button" data-action="open-about">ℹ️ À propos</button>
+      </nav>
+
+      <div class="menu-popover-footer muted">Version 1.4.0 • 22/05/2026</div>
+    </div>
+  </div>
+
+  <!-- ℹ️ Modal À propos / Changelog -->
+
+  <div id="about-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close="about-modal"></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="À propos">
+      <div class="modal-header">
+        <h2>À propos</h2>
+        <button class="modal-close" type="button" data-modal-close="about-modal" aria-label="Fermer">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-meta"><strong>Programme EAJ – BA 116</strong><br>Version <strong>1.4.0</strong> • 22/05/2026 • Codé par <strong>Yoann</strong></p>
+
+        <div class="changelog">
+          <div class="changelog-title">Dernières modifications</div>
+          <ul>
+                        <li>Échange vêtements : motif en puces (plus lisible)</li>
+            <li>Échange vêtements : le scroll ne ferme plus la fenêtre pendant la saisie</li>
+<li>Correctif : “Afficher bannières” masque/affiche vraiment</li>
+            <li>Générateur : semaines réordonnées par date (ajout → bon endroit)</li>
+            <li>Générateur : bannières avec dates début (auto = aujourd’hui) / fin (optionnel)</li>
+            <li>Mobile : zoom désactivé + fin du “scroll à droite”</li>
+            <li>Correctif : fenêtre admin au-dessus des autres éléments</li>
+</ul>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts : Supabase + données de secours + générateur -->
-<script>
-  // Cache-buster (générateur)
-  window.EAJ_BUILD = "1.3.1";
+  <!-- ✉️ Modal contact -->
+  <div id="contact-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close="contact-modal"></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="Contact">
+      <div class="modal-header">
+        <h2>Signaler un bug / Contact</h2>
+        <button class="modal-close" type="button" data-modal-close="contact-modal" aria-label="Fermer">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-meta">Décris le souci : la version et le lien de la page seront ajoutés automatiquement. Tu peux ensuite ouvrir WhatsApp ou copier le message.</p>
+
+        <label class="modal-field">
+          <span>Message</span>
+          <textarea id="contact-message" rows="6" placeholder="Ex: Sur mobile, le filtre EAJ2 ne masque pas les activités communes…
+
+Étapes pour reproduire :
+1) …
+2) …
+Résultat obtenu : …
+Résultat attendu : …"></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button id="open-whatsapp" class="btn-primary" type="button">Ouvrir WhatsApp</button>
+          <button id="copy-contact" class="btn-secondary" type="button">Copier le message</button>
+          <button class="btn-secondary" type="button" data-modal-close="contact-modal">Fermer</button>
+        </div>
+
+        <p class="modal-hint" id="copy-hint" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 🧥 Modal échange vêtements -->
+  <div id="clothes-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close="clothes-modal"></div>
+    <div class="modal-dialog modal-compact" role="dialog" aria-modal="true" aria-label="Échange vêtements">
+      <div class="modal-header">
+        <h2>Échange vêtements</h2>
+        <button class="modal-close" type="button" data-modal-close="clothes-modal" aria-label="Fermer">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-meta">Prépare un message WhatsApp prêt à envoyer. Aucune donnée n’est enregistrée.</p>
+
+        <div class="grid-2">
+          <label class="modal-field">
+            <span>Prénom</span>
+            <input id="clothes-firstname" type="text" autocomplete="given-name" placeholder="Ex : Lucas" />
+          </label>
+
+          <label class="modal-field">
+            <span>Groupe</span>
+            <select id="clothes-eaj">
+              <option value="">Choisir…</option>
+              <option value="EAJ1">EAJ1</option>
+              <option value="EAJ2">EAJ2</option>
+              <option value="EAJ3">EAJ3</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="modal-field">
+          <span>Type de vêtement</span>
+          <input id="clothes-type" type="hidden" value="" />
+          <button id="clothes-type-trigger" class="dd-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="dd-trigger-left">
+              <span class="dd-trigger-icon" aria-hidden="true"></span>
+              <span class="dd-trigger-label">Choisir un vêtement…</span>
+            </span>
+            <span class="dd-caret" aria-hidden="true">▾</span>
+          </button>
+
+          <div id="clothes-type-menu" class="dd-menu" role="listbox" aria-label="Liste des vêtements" hidden>
+            <button type="button" class="dd-item" role="option" data-value="Combinaison de vol">
+              <img class="dd-ico" src="images/icons/combinaison-vol.png" alt="" />
+              <span>Combinaison de vol</span>
+            </button>
+            <button type="button" class="dd-item" role="option" data-value="Parka">
+              <img class="dd-ico" src="images/icons/parka.png" alt="" />
+              <span>Parka</span>
+            </button>
+            <button type="button" class="dd-item" role="option" data-value="Bombers">
+              <img class="dd-ico" src="images/icons/bombers.png" alt="" />
+              <span>Bombers</span>
+            </button>
+            <button type="button" class="dd-item" role="option" data-value="T-shirt">
+              <img class="dd-ico" src="images/icons/tshirt.png" alt="" />
+              <span>T-shirt</span>
+            </button>
+            <button type="button" class="dd-item" role="option" data-value="Short">
+              <img class="dd-ico" src="images/icons/short.png" alt="" />
+              <span>Short</span>
+            </button>
+            <button type="button" class="dd-item" role="option" data-value="Veste de survêtement">
+              <img class="dd-ico" src="images/icons/veste-survetement.png" alt="" />
+              <span>Veste de survêtement</span>
+            </button>
+            <button type="button" class="dd-item" role="option" data-value="Pantalon de survêtement">
+              <img class="dd-ico" src="images/icons/pantalon-survetement.png" alt="" />
+              <span>Pantalon de survêtement</span>
+            </button>
+          </div>
+          <small class="field-hint">Choisis un type.</small>
+        </label>
+
+        <label class="modal-field">
+          <span>Taille du vêtement à échanger</span>
+          <input id="clothes-size" type="text" placeholder="Ex : S, M, L, XL, 38, 42…" />
+          <small class="field-hint">Obligatoire.</small>
+        </label>
+
+        <div class="modal-field">
+          <span class="field-label">Motif</span>
+          <div class="motif-list" role="radiogroup" aria-label="Motif">
+            <label class="motif-item">
+              <input type="radio" name="clothes-reason" value="taille">
+              <span class="motif-text">🔁 Échange de taille</span>
+            </label>
+            <label class="motif-item">
+              <input type="radio" name="clothes-reason" value="casse">
+              <span class="motif-text">🛠️ Échange car cassé / abîmé</span>
+            </label>
+          </div>
+        </div>
+
+        <label id="clothes-size-wanted-field" class="modal-field" hidden>
+          <span>Taille voulue</span>
+          <input id="clothes-size-wanted" type="text" placeholder="Ex : M (taille souhaitée)" />
+          <small class="field-hint">Obligatoire si échange de taille.</small>
+        </label>
+
+        <p class="modal-hint subtle">Petit rappel : on s’occupe de l’échange au plus vite 🙂</p>
+
+        <div class="modal-actions">
+          <button id="clothes-whatsapp" class="btn-primary" type="button">Ouvrir WhatsApp</button>
+          <button id="clothes-copy" class="btn-secondary" type="button">Copier le message</button>
+          <button class="btn-secondary" type="button" data-modal-close="clothes-modal">Fermer</button>
+        </div>
+
+        <p class="modal-hint" id="clothes-hint" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+
+<!-- ⚙️ JS : d’abord planning.js (avec version), puis la logique -->
+  <script>
+  // Cache-buster global (évite les "versions fantômes" sur GitHub Pages)
+  window.EAJ_BUILD = "1.4.0";
   (function () {
     const bust = Date.now();
-    const load = (src, cb) => {
-      const s = document.createElement("script");
-      s.src = src;
-      s.onload = () => cb && cb();
-      s.onerror = () => { console.error("Erreur de chargement :", src); cb && cb(); };
-      document.body.appendChild(s);
-    };
-    load("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2", function () {
-      load(`supabase-config.js?v=1.3.1-${bust}`, function () {
-        load(`planning.js?v=1.3.1-${bust}`, function () {
-          load(`planning-api.js?v=1.3.1-${bust}`, function () {
-            load(`eaj-generator.js?v=1.3.1-${bust}`);
-          });
-        });
-      });
-    });
+    const s = document.createElement('script');
+    s.src = `version-loader.js?v=1.4.0-${bust}`;
+    document.head.appendChild(s);
   })();
 </script>
 </body>

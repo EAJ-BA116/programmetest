@@ -1,1841 +1,1092 @@
-:root {
-  color-scheme: light;
+-- ======================================================
+-- IMPORT DU PLANNING ACTUEL DANS SUPABASE
+-- ======================================================
+-- Lance d'abord supabase-setup.sql.
+-- Puis lance ce fichier pour envoyer le planning.js actuel dans la ligne main.
 
-  /* Couleurs de base (light) */
-  --blue-main: #0053a6;
-  --blue-light: #e4effb;
-  --blue-soft: #1e73c9;
-  --red-main: #e3312d;
-
-  --bg-page: #f3f5f9;
-  --bg-card: #ffffff;
-  --bg-card-soft: #f7f9fc;
-
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --border-soft: #d0d7e2;
-}
-
-/* Thème sombre : on redéfinit les variables */
-body[data-theme="dark"] {
-  color-scheme: dark;
-
-  --bg-page: #050816;
-  --bg-card: #101827;
-  --bg-card-soft: #161d2f;
-
-  --text-main: #f9fafb;
-  --text-muted: #9ca3af;
-  --border-soft: #1f2937;
-
-  --blue-light: #0b1730;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #f8fbff 0, var(--bg-page) 45%, #e5e9f2 100%);
-  color: var(--text-main);
-  min-height: 100vh;
-  padding: 1.5rem 1rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-body[data-theme="dark"] {
-  color-scheme: dark;
-
-  background: radial-gradient(circle at top, #0b1730 0, #050816 45%, #020617 100%);
-}
-
-/* ⚠️ Bannière d’alerte */
-#alert-banner {
-  display: none;
-  /* Conteneur neutre : chaque ligne porte sa propre couleur */
-  background: transparent;
-  color: inherit;
-  padding: 0;
-  text-align: center;
-  font-size: 0.9rem;
-  border-bottom: none;
-  font-weight: 600;
-}
-
-
-#alert-banner.has-banners {
-  display: block;
-}
-.alert-line {
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  white-space: normal;
-}
-
-.alert-line--important {
-  background: #dbeafe;
-  color: #1d4ed8;
-  border-bottom-color: #93c5fd;
-}
-
-.alert-line--info {
-  background: #e0f2fe;
-  color: #0369a1;
-  border-bottom-color: #7dd3fc;
-}
-
-.alert-line--confirmation {
-  background: #dcfce7;
-  color: #166534;
-  border-bottom-color: #86efac;
-}
-
-.alert-line--annonce {
-  background: #f3e8ff;
-  color: #7e22ce;
-  border-bottom-color: #d8b4fe;
-}
-
-.alert-line--attention {
-  background: #ffedd5;
-  color: #9a3412;
-  border-bottom-color: #fdba74;
-}
-
-header {
-  max-width: 960px;
-  margin: 0 auto 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.6rem;
-}
-
-.logo-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.logo-wrapper img {
-  max-height: 70px;
-  height: auto;
-  width: auto;
-}
-
-.site-title-text {
-  text-align: left;
-}
-
-.site-title-text h1 {
-  font-size: 1.6rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--blue-main);
-  margin-bottom: 0.1rem;
-}
-
-.site-title-text p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.app-version {
-  display: inline-block;
-  margin-left: 0.55rem;
-  padding: 0.12rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card-soft);
-  color: var(--text-main);
-  font-size: 0.78rem;
-  vertical-align: middle;
-}
-
-.badge-time {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.1rem;
-  padding: 0.25rem 0.9rem;
-  border-radius: 999px;
-  background: var(--blue-light);
-  color: var(--blue-soft);
-  font-size: 0.8rem;
-  border: 1px solid rgba(0, 83, 166, 0.18);
-}
-
-/* Barre filtres + bouton thème */
-#filter-bar {
-  max-width: 960px;
-  margin: 0 auto 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-#filter-buttons {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.projects-dropdown select {
-  padding: 0.45rem 1rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  color: var(--text-main);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: 0.2s;
-  appearance: none;
-  outline: none;
-}
-
-.projects-dropdown select:hover {
-  background: var(--bg-card-soft);
-}
-
-.projects-dropdown select:focus {
-  box-shadow: 0 0 0 3px rgba(0, 83, 166, 0.18);
-}
-
-.btn-filter {
-  padding: 0.45rem 1.1rem;
-  background: var(--bg-card);
-  color: var(--blue-main);
-  border: 1px solid rgba(0, 83, 166, 0.35);
-  border-radius: 999px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.btn-filter:hover {
-  background: var(--blue-light);
-}
-
-.btn-filter.active {
-  background: var(--blue-main);
-  color: #ffffff;
-  border-color: var(--blue-main);
-}
-
-.btn-theme {
-  padding: 0.45rem 1rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  color: var(--text-main);
-  font-size: 0.85rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: 0.2s;
-}
-
-.btn-theme:hover {
-  background: var(--bg-card-soft);
-}
-
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.week {
-  background: linear-gradient(135deg, rgba(0, 83, 166, 0.08), var(--bg-card));
-  border-radius: 1.1rem;
-  padding: 1rem;
-  border: 1px solid var(--border-soft);
-  margin-bottom: 0.7rem;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
-  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
-}
-
-/* Séances passées grisées */
-.week-past {
-  opacity: 0.55;
-}
-
-body[data-theme="dark"] .week-past {
-  opacity: 0.4;
-}
-
-/* Prochaine séance mise en valeur */
-.week-next {
-  border-color: var(--blue-main);
-  box-shadow: 0 0 0 2px rgba(0, 83, 166, 0.2), 0 10px 24px rgba(15, 23, 42, 0.18);
-  transform: translateY(-2px);
-}
-
-.week-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.7rem;
-  margin-bottom: 0.8rem;
-}
-
-.week-title {
-  font-size: 1.1rem;
-  font-weight: 650;
-  color: var(--blue-main);
-}
-
-body[data-theme="dark"] .week-title {
-  color: #bfdbfe;
-}
-
-.week-note {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 0.15rem;
-}
-
-.week-label {
-  font-size: 0.75rem;
-  padding: 0.15rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 83, 166, 0.25);
-  background: var(--bg-card);
-  color: var(--red-main);
-  font-weight: 600;
-}
-
-/* Badge séance passée */
-.week-label-past {
-  font-size: 0.75rem;
-  padding: 0.15rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid #9ca3af;
-  background: var(--bg-card);
-  color: #6b7280;
-  font-weight: 500;
-}
-
-body[data-theme="dark"] .week-label-past {
-  color: #9ca3af;
-  border-color: #4b5563;
-}
-
-.groups {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-}
-
-@media (min-width: 700px) {
-  .groups {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+update public.eaj_planning_state
+set
+  semaines = $semaines$[
+  {
+    "isoDate": "2025-12-03",
+    "date": "3 décembre 2025",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Aéronefs et engins spéciaux",
+            "horaire": "14h00 à 15h30",
+            "materiel": "Manuel BIA, trousse",
+            "encadrant": "CNE Gigi"
+          },
+          {
+            "type": "aeromodelisme",
+            "texte": "Aéromodélisme",
+            "horaire": "15h30 à 17h00",
+            "lieu": "T19",
+            "encadrant": "ADC Alexandre"
+          },
+          {
+            "type": "rencontres",
+            "texte": "Visite des EAJ de Dijon",
+            "horaire": "Dans l'après-midi (10minutes)"
+          }
+        ],
+        "tenue": "Tenue de Vol + Parka"
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [
+          {
+            "type": "aeromodelisme",
+            "texte": "Aéromodélisme",
+            "horaire": "14h00 à 15h30",
+            "lieu": "T19",
+            "encadrant": "ADC Alexandre"
+          },
+          {
+            "type": "rencontres",
+            "texte": "Visite des EAJ de Dijon",
+            "horaire": "Dans l'après-midi (10minutes)"
+          },
+          {
+            "type": "tir",
+            "texte": "carabine",
+            "horaire": "15h30-17h00",
+            "lieu": "Escadron de protection",
+            "encadrant": "Personnel de l'EP"
+          }
+        ],
+        "tenue": "Tenue de Vol + Parka"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "projet",
+            "texte": "Prix Armée Jeunesse/Tony Papin",
+            "horaire": "14h00 à 16h00",
+            "lieu": "Salle de cours",
+            "materiel": "Trousse",
+            "encadrant": "ADC Anthony"
+          }
+        ],
+        "horaire": "14h-16h",
+        "tenue": "Tenue de Vol + Parka",
+        "materiel": "Chéque CSA (50€) + caution (150€)"
+      }
+    ]
+  },
+  {
+    "isoDate": "2025-12-10",
+    "date": "10 décembre 2025",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Etude des aéronefs et engins spatiaux",
+            "horaire": "14h00 à 16h30",
+            "materiel": "Manuel BIA, trousse",
+            "encadrant": "CNE Gigi"
+          },
+          {
+            "type": "autre",
+            "texte": "Essayage des calots",
+            "horaire": "16h30 à 17h00",
+            "encadrant": "Equipe EAJ"
+          }
+        ],
+        "tenue": "Tenue de vol"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "rencontres",
+            "texte": "Breifing Maj",
+            "encadrant": "Maj Laurent"
+          },
+          {
+            "type": "autre",
+            "texte": "Informations FMIR",
+            "encadrant": "ADC Franck"
+          },
+          {
+            "type": "projet",
+            "texte": "80 ans Tony Papin",
+            "horaire": "14h-17h",
+            "tenue": "Trousse",
+            "encadrant": "ADC Anthony, ADJ Yoann, ADJ Henri, Adj Laurent, Adj, Will"
+          }
+        ],
+        "tenue": "Tenue de vol"
+      }
+    ]
+  },
+  {
+    "isoDate": "2025-12-17",
+    "date": "17 décembre 2025",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [
+      {
+        "groupes": [
+          "EAJ1",
+          "EAJ2",
+          "EAJ3"
+        ],
+        "activites": [
+          {
+            "type": "ceremonie",
+            "texte": "Répétition cérémonie",
+            "horaire": "15h30-17h00",
+            "encadrant": "Equipe EAJ"
+          },
+          {
+            "type": "ceremonie",
+            "texte": "Cérémonie Calot+ remise éperviers, avec  les parents des nouveaux EAJ 2025",
+            "horaire": "17h-18h30",
+            "encadrant": "Equipe EAJ"
+          }
+        ],
+        "horaire": "15h30-17h00",
+        "lieu": "Mess",
+        "tenue": "Tenue de vol",
+        "encadrant": "Equipe EAJ"
+      }
+    ],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "visite",
+            "texte": "Musée LUXEUIL",
+            "horaire": "14h00 à 15h30",
+            "lieu": "Musée en ville",
+            "tenue": "Tenue civile",
+            "encadrant": "ADC Anthony"
+          }
+        ]
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2025-12-24",
+    "date": "24 décembre 2025",
+    "statut": "off",
+    "note": "",
+    "messageOff": "Vacances scolaires et joyeux Noël",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2025-12-31",
+    "date": "31 décembre 2025",
+    "statut": "off",
+    "note": "",
+    "messageOff": "Vacances scolaires et Bonne année",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-01-07",
+    "date": "7 janvier 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Aérodynamique",
+            "horaire": "14h - 15 h",
+            "materiel": "Manuel BIA, trousse"
+          },
+          {
+            "type": "drone",
+            "texte": "Réglementation",
+            "horaire": "15h -15h30"
+          }
+        ],
+        "tenue": "Tenue de vol",
+        "encadrant": "ADJ Yoann"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-01-14",
+    "date": "14 janvier 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [
+      {
+        "groupes": [
+          "EAJ2",
+          "EAJ3"
+        ],
+        "activites": [
+          {
+            "type": "devoirMemoire",
+            "texte": "Présentation patchs, traditions",
+            "horaire": "14h-16h",
+            "lieu": "Cristal",
+            "tenue": "Tenue de Vol",
+            "encadrant": "ADJ Grany"
+          },
+          {
+            "type": "rencontres",
+            "texte": "Galette des Rois",
+            "horaire": "16h-17h",
+            "lieu": "UIS",
+            "encadrant": "Ensemble des encadrants"
+          }
+        ],
+        "tenue": "Tenue de vol"
+      }
+    ],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Aérodynamique",
+            "horaire": "14h-16h",
+            "materiel": "Manuel BIA, trousse",
+            "encadrant": "CNE Gigi"
+          },
+          {
+            "type": "rencontres",
+            "texte": "Galettes des Rois",
+            "horaire": "16h-17h",
+            "lieu": "UIS",
+            "encadrant": "Ensemble des encadrants"
+          }
+        ],
+        "tenue": "Tenue de Vol"
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [],
+        "horaire": "14h00-17h00",
+        "lieu": "Cristal",
+        "tenue": "Tenue de Vol",
+        "encadrant": "ADJ Grany"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [],
+        "horaire": "14h00-17h00",
+        "lieu": "Cristal",
+        "tenue": "Tenue de Vol",
+        "encadrant": "ADJ Grany"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-01-21",
+    "date": "21 janvier 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Aérodynamique",
+            "lieu": "Salle de Cours",
+            "tenue": "Tenue de Vol",
+            "materiel": "Manuel BIA, Trousse",
+            "encadrant": "CNE Gigi"
+          }
+        ]
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [
+          {
+            "type": "ceremonie",
+            "texte": "Voeux du prefet",
+            "horaire": "16h30",
+            "lieu": "Devant le base",
+            "tenue": "Tenue de Vol",
+            "encadrant": "Major Laurent, SGC Maxime"
+          }
+        ],
+        "tag": "Pour les 4 personnes désignées"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "projet",
+            "texte": "80 ans Tony Papin",
+            "lieu": "T19",
+            "tenue": "Tenue de Vol",
+            "encadrant": "ADC Anthony, ADJ Yoann, ADJ Henri, ADC Will, ADJ Laurent"
+          }
+        ],
+        "tag": "Maquette + Texte 80 ans Tony Papin"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-01-28",
+    "date": "28 janvier 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Aérodynamique : Aérospatial",
+            "encadrant": "CNE Gigi"
+          }
+        ],
+        "horaire": "14h-17h",
+        "lieu": "T19",
+        "tag": "BIA + Révision module Aérodynamique"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "projet",
+            "texte": "Projet Tomy Papin",
+            "encadrant": "ADC Anthony, ADJ Yoann, ADJ Henri"
+          }
+        ],
+        "horaire": "14h-17h",
+        "lieu": "T19",
+        "tag": "Maquette, texte"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-02-04",
+    "date": "4 février 2026",
+    "statut": "session",
+    "note": "Attention, il faudra surement arriver avant l'heure prévu.",
+    "messageOff": "",
+    "activitesCommunes": [
+      {
+        "groupes": [
+          "EAJ1",
+          "EAJ3"
+        ],
+        "activites": [
+          {
+            "type": "ceremonie",
+            "texte": "Cérémonie des 80 ans de Tomy Papin, parrain de la BA 116"
+          }
+        ],
+        "horaire": "14h - 16h",
+        "lieu": "BA 116",
+        "tenue": "Tenue de vol"
+      }
+    ],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-02-10",
+    "date": "10 février 2026",
+    "statut": "off",
+    "note": "",
+    "messageOff": "Vacances de février",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-02-18",
+    "date": "18 février 2026",
+    "statut": "off",
+    "note": "",
+    "messageOff": "Vacances de février",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-02-25",
+    "date": "25 février 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Météo",
+            "horaire": "14h - 15h30",
+            "materiel": "Manuel BIA, Trousse",
+            "encadrant": "CNE Gigi"
+          },
+          {
+            "type": "aeromodelisme",
+            "texte": "Maquette",
+            "horaire": "15h30-17h",
+            "lieu": "T19",
+            "encadrant": "ADC Alex"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tenue": "Tenue de vol"
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [
+          {
+            "type": "aeromodelisme",
+            "texte": "Maquette",
+            "horaire": "14h - 15h30",
+            "lieu": "T19",
+            "tenue": "Tenue de vol",
+            "encadrant": "ADC Alex"
+          },
+          {
+            "type": "visite",
+            "texte": "SEO(essence) ou Pompier de l'air",
+            "horaire": "15h30 - 17h"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tenue": "Tenue de vol"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "projet",
+            "texte": "Henri Fertet Prix Armée Jeunesse",
+            "materiel": "Trousse",
+            "encadrant": "ADC Anthony, ADJ Yoann, ADJ Henri"
+          }
+        ],
+        "horaire": "14h00 - 17h",
+        "tenue": "Tenue de vol"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-03-04",
+    "date": "4 mars 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Météo",
+            "encadrant": "SLT Daniel"
+          }
+        ],
+        "horaire": "14h - 16h",
+        "tenue": "Tenue de Vol",
+        "materiel": "Manuel BIA, Trousse"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-03-11",
+    "date": "11 mars 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [
+      {
+        "groupes": [
+          "EAJ2",
+          "EAJ3"
+        ],
+        "activites": [
+          {
+            "type": "sport",
+            "texte": "Challenge EAJ2 - EAJ3"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "lieu": "Gymnase",
+        "tenue": "Tenue de sport",
+        "materiel": "Gourde",
+        "encadrant": "Moniteurs de sports"
+      }
+    ],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Météo",
+            "horaire": "14h00 15h30",
+            "tenue": "Tenue de Vol",
+            "materiel": "Manuel BIA, trousse",
+            "encadrant": "CNE Gigi"
+          },
+          {
+            "type": "sport",
+            "texte": "Scéance de sport",
+            "horaire": "5h30 - 17h",
+            "lieu": "Gymanse",
+            "tenue": "Tenue de sport",
+            "materiel": "Gourde",
+            "encadrant": "Moniteurs de sports"
+          }
+        ],
+        "tenue": "Tenue de vol, Tenue de sport",
+        "materiel": "Manuel Bia, Trousse, Gourde"
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [],
+        "tenue": "Tenue de sport",
+        "materiel": "Gourde"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [],
+        "tenue": "Tenue de sport",
+        "materiel": "Gourde"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-03-18",
+    "date": "18 mars 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Météo",
+            "horaire": "14h - 16h",
+            "encadrant": "CNE Gigi"
+          },
+          {
+            "type": "drone",
+            "texte": "Réglementation",
+            "horaire": "16h - 17h",
+            "materiel": "Trousse",
+            "encadrant": "ADJ Yoann, ADC William"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tenue": "Tenue de Vol",
+        "materiel": "Manuel BIA, Trousse"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-03-25",
+    "date": "25 mars 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Météo",
+            "horaire": "14h - 15h30",
+            "materiel": "Manuel BIA, Trousse"
+          },
+          {
+            "type": "aeromodelisme",
+            "texte": "Maquette",
+            "horaire": "15h30 - 17h",
+            "lieu": "T19",
+            "encadrant": "ADC Alex"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tenue": "Tenue de vol"
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [
+          {
+            "type": "aeromodelisme",
+            "texte": "Maquette",
+            "horaire": "14h - 15h30",
+            "encadrant": "ADC Alex"
+          },
+          {
+            "type": "visite",
+            "texte": "SEO ou pompier",
+            "horaire": "15h30 - 17h"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tenue": "Tenue de vol"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-04-01",
+    "date": "1 avril 2026",
+    "statut": "off",
+    "note": "",
+    "messageOff": "BASEX. Peut-être cours  BIA en Visio conférence pour les EAJ 1",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-04-08",
+    "date": "8 avril 2026",
+    "statut": "off",
+    "note": "",
+    "messageOff": "Vacances de Pâques",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-04-15",
+    "date": "15 avril 2026",
+    "statut": "off",
+    "note": "",
+    "messageOff": "Vacances de Pâques",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": []
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": []
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-04-22",
+    "date": "22 avril 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "rencontres",
+            "texte": "Présentation métier du BIA",
+            "horaire": "14h- 15h30",
+            "lieu": "HM10",
+            "tenue": "Tenue de vol",
+            "encadrant": "Encadrant EAJ"
+          },
+          {
+            "type": "bia",
+            "texte": "Circulation aérienne",
+            "horaire": "15h30 - 17h",
+            "tenue": "Tenue de vol",
+            "materiel": "Manuel BIA, Trousse",
+            "encadrant": "CNE Gigi"
+          }
+        ],
+        "horaire": "14h - 17h"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "tir",
+            "texte": "Tir à la Carabine",
+            "horaire": "14h - 17h",
+            "tenue": "Tenue de vol",
+            "encadrant": "ADC Franck, ADC Philippe"
+          }
+        ],
+        "horaire": "14h - 17h"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-04-29",
+    "date": "29 avril 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Circulation aérienne",
+            "horaire": "14h - 16h",
+            "materiel": "Trousse, Gourde",
+            "encadrant": "CNE Gigi"
+          }
+        ],
+        "horaire": "14h - 16h"
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [
+          {
+            "type": "drone",
+            "texte": "Drone",
+            "horaire": "14h - 17h",
+            "tenue": "Tenue de Vol",
+            "encadrant": "ADC William, ADJ Yoann"
+          }
+        ],
+        "horaire": "14h - 17h"
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "rencontres",
+            "texte": "Stand EAJ pour les classes de défense",
+            "horaire": "14h - 17h",
+            "lieu": "HM10",
+            "tenue": "Tenue de Vol",
+            "encadrant": "ADJ Henri"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tag": "3 - 4 EAJ nécessaire pour présenter les EAJ"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-05-06",
+    "date": "6 mai 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Circulation aérienne",
+            "horaire": "14h 15h30",
+            "materiel": "Trousse, manuel BIA",
+            "encadrant": "CNE Gigi"
+          },
+          {
+            "type": "rencontres",
+            "texte": "CIRFA de Besançon",
+            "horaire": "15h30 - 17h",
+            "encadrant": "Personnel du CIRFA"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tenue": "Tenue de vol"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-05-13",
+    "date": "13 mai 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "bia",
+            "texte": "Circulation aérienne",
+            "horaire": "14h - 16h",
+            "materiel": "Trousse, Manuel BIA",
+            "encadrant": "CNE Gigi"
+          }
+        ],
+        "horaire": "14h - 16h",
+        "tenue": "Tenue de Vol",
+        "tag": "Dernière séance de BIA avant examen"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-05-14",
+    "date": "14 mai 2026",
+    "statut": "session",
+    "note": "Challenge Inter EAJ sur la BA de Salon. Nous prenons seulement 6 équipiers des EAJ2 et 3 pour y aller. Les EAJ 1 passent leur examen du BIA le 20/05/2026",
+    "messageOff": "",
+    "activitesCommunes": [
+      {
+        "groupes": [
+          "EAJ1",
+          "EAJ2",
+          "EAJ3"
+        ],
+        "activites": [
+          {
+            "type": "rencontres",
+            "texte": "Challenge Inter EAJ"
+          }
+        ],
+        "horaire": "du jeudi 14/05/2026 au dimanche 17/05/2026",
+        "encadrant": "ADC Franck"
+      }
+    ],
+    "groupes": [
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [
+          {
+            "type": "rencontres",
+            "texte": "Sport, drone..."
+          }
+        ]
+      },
+      {
+        "titre": "Groupe 3 – EAJ3",
+        "activites": [
+          {
+            "type": "rencontres",
+            "texte": "Sport, drone..."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-05-20",
+    "date": "20 mai 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "autre",
+            "texte": "Examen BIA"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "lieu": "Lycée Lumiére",
+        "tenue": "Tenue de Vol",
+        "tag": "Examen final BIA. Bon Courage"
+      },
+      {
+        "titre": "Groupe 2 – EAJ2",
+        "activites": [
+          {
+            "type": "visite",
+            "texte": "Cimetière Epinal ou  Musée de Vincey",
+            "horaire": "14h - 17h",
+            "lieu": "Epinal ou Vincey",
+            "encadrant": "ADC Anthony"
+          }
+        ],
+        "horaire": "14h - 17h",
+        "tenue": "Tenue de Vol"
+      }
+    ]
+  },
+  {
+    "isoDate": "2026-05-27",
+    "date": "27 mai 2026",
+    "statut": "session",
+    "note": "",
+    "messageOff": "",
+    "activitesCommunes": [],
+    "groupes": [
+      {
+        "titre": "Groupe 1 – EAJ1",
+        "activites": [
+          {
+            "type": "sport",
+            "texte": "Sport Armée Jeunesse",
+            "horaire": "14h - 17h",
+            "lieu": "Gymnase",
+            "encadrant": "Moniteurs de sports"
+          }
+        ],
+        "tenue": "Tenue de sport",
+        "materiel": "Gourde",
+        "tag": "Rencontre sportive avec les cadets de la gendarmerie, les pompiers...."
+      }
+    ]
   }
-}
-
-.group-card {
-  background: var(--bg-card);
-  border-radius: 0.9rem;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid var(--border-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.group-title {
-  font-size: 1rem;
-  font-weight: 650;
-  margin-bottom: 0.05rem;
-  color: var(--blue-main);
-}
-
-/* Toujours 3 colonnes bien ordonnées */
-.groups {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-}
-
-/* Même si un groupe manque, on garde les colonnes */
-.group-card[data-group="EAJ1"] {
-  order: 1;
-}
-.group-card[data-group="EAJ2"] {
-  order: 2;
-}
-.group-card[data-group="EAJ3"] {
-  order: 3;
-}
-
-/* Version mobile : une colonne, mais ordre respecté */
-@media (max-width: 699px) {
-  .groups {
-    grid-template-columns: 1fr;
+]$semaines$::jsonb,
+  alert_banners = $banners$[
+  {
+    "actif": true,
+    "emoji": "🚫",
+    "type": "important",
+    "texte": "Bon courage et bonne révision pour le BIA",
+    "cibles": [
+      "EAJ1"
+    ],
+    "startDate": "12/05/2026",
+    "endDate": "20/05/2026"
+  },
+  {
+    "actif": true,
+    "emoji": "📢",
+    "type": "annonce",
+    "texte": "On compte sur vous pour le Challenge inter-EAJ",
+    "cibles": [
+      "EAJ2",
+      "EAJ3"
+    ],
+    "startDate": "14/05/2026",
+    "endDate": "17/05/2026"
   }
-}
-
-
-body[data-theme="dark"] .group-title {
-  color: #bfdbfe;
-}
-
-.label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 0.3rem;
-}
-
-.value {
-  font-size: 0.9rem;
-}
-
-.activities-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.3rem;
-}
-
-.activity-chip {
-  font-size: 0.78rem;
-  padding: 0.18rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.7);
-  background: var(--bg-card-soft);
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 0.35rem;
-  line-height: 1.2;
-  white-space: normal;
-  max-width: 100%;
-}
-
-.activity-dot {
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 999px;
-  background: #64748b;
-  flex-shrink: 0;
-  margin-top: 0.1rem;
-}
-
-.activity-chip span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  flex-wrap: wrap;
-  word-break: break-word;
-}
-
-.tag-line {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  margin-top: 0.3rem;
-}
-
-.tag {
-  font-size: 0.75rem;
-  padding: 0.12rem 0.55rem;
-  border-radius: 999px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-soft);
-  color: var(--blue-soft);
-  white-space: nowrap;
-}
-
-.week-off {
-  text-align: center;
-  padding: 1.5rem 1rem 0.8rem;
-}
-
-.week-off-emoji {
-  font-size: 2.4rem;
-  margin-bottom: 0.5rem;
-}
-
-.week-off-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: var(--blue-main);
-}
-
-body[data-theme="dark"] .week-off-title {
-  color: #bfdbfe;
-}
-
-.week-off-text {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-}
-
-/* Légende & aide */
-.legend {
-  max-width: 960px;
-  margin: 0 auto 1rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-soft);
-  border-radius: 0.8rem;
-  padding: 0.8rem 1rem;
-  font-size: 0.85rem;
-  color: var(--text-main);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.legend strong {
-  color: var(--blue-main);
-}
-
-.legend-line {
-  margin-top: 0.35rem;
-  line-height: 1.6;
-}
-
-footer {
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: auto;
-  padding-top: 1.5rem;
-}
-
-.footer-line {
-  margin: 0.15rem 0;
-}
-
-.footer-link {
-  color: #0053a6;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footer-link:hover {
-  text-decoration: underline;
-}
-
-.help {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  text-align: left;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.help ul {
-  margin-left: 1rem;
-  margin-top: 0.2rem;
-}
-
-.help code {
-  background: #e5e7eb;
-  padding: 0.12rem 0.35rem;
-  border-radius: 0.35rem;
-  font-size: 0.75rem;
-}
-
-body[data-theme="dark"] .help code {
-  background: #111827;
-}
-
-.footer-link-admin {
-  font-size: 0.75rem;
-  opacity: 0.35;
-}
-
-.footer-link-admin:hover {
-  opacity: 0.9;
-}
-
-.footer-link-admin {
-  font-size: 0.75rem;
-  opacity: 0.35;
-}
-
-.footer-link-admin:hover {
-  opacity: 0.9;
-}
-
-/* --- Fenêtre modale admin --- */
-
-.admin-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.65);
-  display: none; /* caché par défaut */
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  z-index: 50;
-}
-
-.admin-modal-overlay.active {
-  display: flex;
-}
-
-.admin-modal {
-  max-width: 420px;
-  width: 100%;
-  background: var(--bg-card);
-  border-radius: 0.9rem;
-  border: 1px solid var(--border-soft);
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.45);
-  padding: 1rem 1.1rem 0.9rem;
-}
-
-.admin-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.4rem;
-}
-
-.admin-modal-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--blue-main);
-}
-
-body[data-theme="dark"] .admin-modal-title {
-  color: #bfdbfe;
-}
-
-.admin-modal-close {
-  border: none;
-  background: transparent;
-  font-size: 1rem;
-  cursor: pointer;
-  color: var(--text-muted);
-}
-
-.admin-modal-close:hover {
-  color: var(--text-main);
-}
-
-.admin-modal-text {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 0.7rem;
-}
-
-.admin-modal-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  margin-bottom: 0.4rem;
-}
-
-.admin-modal-field label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.admin-modal-field input {
-  font-family: inherit;
-  font-size: 0.9rem;
-  padding: 0.35rem 0.55rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card-soft);
-  color: var(--text-main);
-}
-
-.admin-modal-field input:focus {
-  outline: none;
-  border-color: var(--blue-main);
-  box-shadow: 0 0 0 1px rgba(0, 83, 166, 0.35);
-}
-
-.admin-modal-error {
-  min-height: 1.1rem;
-  font-size: 0.78rem;
-  color: #b91c1c;
-  margin-bottom: 0.4rem;
-}
-
-.admin-modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-.admin-btn {
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  color: var(--text-main);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.admin-btn-primary {
-  border-color: var(--blue-main);
-  background: var(--blue-main);
-  color: #ffffff;
-}
-
-.admin-btn-primary:hover {
-  filter: brightness(1.05);
-}
-
-.admin-btn-secondary:hover {
-  background: var(--bg-card-soft);
-}
-
-/* petit effet secousse en cas d’erreur de code */
-.admin-modal.shake {
-  animation: admin-shake 0.3s;
-}
-
-@keyframes admin-shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  50% { transform: translateX(3px); }
-  75% { transform: translateX(-2px); }
-  100% { transform: translateX(0); }
-}
-
-/* Carte d'activité commune en pleine largeur, style "pas de séance" */
-.week-common-card {
-  margin-bottom: 0.9rem;
-  background: var(--bg-card);
-  border-radius: 1rem;
-  border: 1px solid rgba(0, 83, 166, 0.35);
-  padding: 1.2rem 1rem 0.9rem;
-  text-align: center;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
-}
-
-.week-common-emoji {
-  font-size: 2.2rem;
-  margin-bottom: 0.4rem;
-}
-
-.week-common-title {
-  font-size: 1.05rem;
-  font-weight: 650;
-  margin-bottom: 0.1rem;
-  color: var(--blue-main);
-}
-
-body[data-theme="dark"] .week-common-title {
-  color: #bfdbfe;
-}
-
-.week-common-groups {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-}
-
-.week-common-extra {
-  margin-top: 0.3rem;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-/* On recentre un peu la liste d'activités dans ce bloc */
-.week-common-card .activities-list {
-  justify-content: center;
-}
-
-.activity-chip {
-  border-radius: 0.6rem;
-  padding: 0.55rem 0.75rem;
-  margin-bottom: 0.35rem;
-  background: var(--bg-card);
-  border-left: 4px solid var(--blue-main);
-  transition: 0.15s;
-  color: var(--text-main);  /* ⇐ texte bien lisible */
-}
-
-.activity-chip:hover {
-  transform: translateY(-1px);
-}
-
-.activity-chip span {
-  display: inline-block;
-  font-size: 0.85rem;
-}
-
-.activity-chip strong {
-  font-weight: 600;
-}
-
-.activity-chip small {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.72rem;
-  opacity: 0.9;             /* pas trop gris */
-  color: inherit;           /* même couleur que le texte principal */
-}
-
-/* 📱 Mobile : éviter les lignes “qui ne reviennent jamais” (flex + contenu long)
-   Le span est un item flex → on force la largeur et on autorise la césure. */
-@media (max-width: 720px) {
-  .activity-chip { max-width: 100%; }
-  .activity-chip > span { display: block; width: 100%; min-width: 0; }
-  .activity-chip small {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-}
-
-/* On n’utilise plus le petit rond */
-.activity-dot {
-  display: none;
-}
-
-.back-to-top {
-  position: fixed;
-  right: 1.2rem;
-  bottom: 1.2rem;
-  padding: 0.5rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  color: var(--text-main);
-  font-size: 0.8rem;
-  cursor: pointer;
-  display: none; /* affiché en JS */
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
-  z-index: 40;
-}
-
-.back-to-top:hover {
-  transform: translateY(-1px);
-  background: var(--bg-card-soft);
-}
-.footer-link-small {
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
-.footer-link-small:hover {
-  opacity: 1;
-}
-
-/* Modal admin */
-.admin-modal {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-}
-
-.admin-modal.open {
-  display: flex !important;
-}
-
-.admin-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.55);
-}
-
-.admin-modal-dialog {
-  position: relative;
-  background: var(--bg-card);
-  color: var(--text-main);
-  border-radius: 0.9rem;
-  padding: 1.2rem 1.4rem;
-  max-width: 340px;
-  width: 90%;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.45);
-  border: 1px solid var(--border-soft);
-  z-index: 51;
-}
-
-.admin-modal-dialog h2 {
-  font-size: 1rem;
-  margin-bottom: 0.4rem;
-  color: var(--blue-main);
-}
-
-.admin-modal-text {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 0.7rem;
-}
-
-#admin-code-input {
-  width: 100%;
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card-soft);
-  color: var(--text-main);
-  font-size: 0.85rem;
-  margin-bottom: 0.7rem;
-}
-
-.admin-modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.4rem;
-  margin-bottom: 0.3rem;
-}
-
-.btn-admin {
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  border: 1px solid transparent;
-}
-
-.btn-admin-primary {
-  background: var(--blue-main);
-  color: #ffffff;
-  border-color: var(--blue-main);
-}
-
-.btn-admin-secondary {
-  background: var(--bg-card-soft);
-  color: var(--text-main);
-  border-color: var(--border-soft);
-}
-
-.btn-admin-primary:hover {
-  filter: brightness(1.05);
-}
-
-.btn-admin-secondary:hover {
-  background: var(--bg-card);
-}
-
-.admin-error {
-  font-size: 0.75rem;
-  color: #b91c1c;
-}
-
-/* Patch militaire flottant (retour haut) */
-.back-to-top.air-patch {
-  position: fixed;
-  right: 1.2rem;
-  bottom: 1.2rem;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 2px solid var(--blue-main);
-  background: linear-gradient(145deg, #0e1a2b, #1a2c46);
-  color: #e5edf8;
-  font-size: 1.4rem;
-  display: none; /* affiché par JS */
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 999;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), 
-              inset 0 0 10px rgba(255, 255, 255, 0.05);
-  transition: 0.2s ease;
-}
-
-/* Mode clair */
-body[data-theme="light"] .back-to-top.air-patch {
-  background: linear-gradient(145deg, #ffffff, #dbe7ff);
-  color: #1a2e4a;
-  border-color: #3b82f6;
-}
-
-/* Hover (petit glow bleu) */
-.back-to-top.air-patch:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.45),
-              inset 0 0 12px rgba(255, 255, 255, 0.12);
-}
-
-/* Animation apparition */
-.back-to-top.air-patch.show {
-  display: flex !important;
-  animation: patchPop 0.25s ease;
-}
-
-@keyframes patchPop {
-  from { transform: scale(0.6); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-.group-card-off {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  opacity: 0.8;
-}
-
-.group-off {
-  margin-top: 0.4rem;
-}
-
-.group-off-emoji {
-  font-size: 1.8rem;
-  margin-bottom: 0.2rem;
-}
-
-.group-off-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 0.15rem;
-  color: var(--red-main, #e3312d);
-}
-
-.group-off-text {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.gen-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.gen-header h1 {
-  margin: 0;
-}
-
-.back-btn {
-  padding: 0.4rem 0.8rem;
-  background: #0053a6;
-  color: white;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-.back-btn:hover {
-  background: #003d7a;
-}
-
-/* ---------- Toggle affichage bannières ---------- */
-#alert-banner.is-hidden {
-  display: none !important;
-}
-
-.toggle-banners {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.9rem;
-  background: var(--bg-card);
-  border: 1px solid rgba(0, 83, 166, 0.35);
-  border-radius: 9px;
-  color: var(--text);
-  cursor: pointer;
-  user-select: none;
-}
-
-.toggle-banners input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--blue-main);
-}
-
-/* =============================
-   v1.2.0 – UI / UX
-   ============================= */
-
-/* Header + bouton hamburger */
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-}
-
-.btn-menu {
-  width: 44px;
-  height: 44px;
-  border-radius: 0.9rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  color: var(--text-main);
-  cursor: pointer;
-  font-size: 1.3rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-menu:hover {
-  background: var(--bg-card-soft);
-}
-
-/* Barre filtres sticky */
-#filter-bar {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  backdrop-filter: blur(6px);
-}
-
-.filter-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.toggle-banners {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  user-select: none;
-}
-
-.toggle-banners input {
-  accent-color: var(--blue-main);
-}
-
-/* Légende dépliable */
-.legend-details {
-  margin: 0.75rem auto 0;
-  max-width: 1100px;
-  padding: 0 1rem;
-}
-
-.legend-details summary {
-  cursor: pointer;
-  list-style: none;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.legend-details summary::-webkit-details-marker {
-  display: none;
-}
-
-.legend-details[open] summary {
-  margin-bottom: 0.45rem;
-}
-
-/* Section projets */
-.projects-section {
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.projects-section h2 {
-  font-size: 1.05rem;
-  margin: 0.7rem 0 0.5rem;
-  color: var(--text-main);
-}
-
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.75rem;
-}
-
-.project-card {
-  display: block;
-  padding: 0.85rem 0.95rem;
-  border-radius: 0.95rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  text-decoration: none;
-  color: var(--text-main);
-  transition: 0.15s ease;
-}
-
-.project-card:hover {
-  transform: translateY(-1px);
-  background: var(--bg-card-soft);
-}
-
-.project-title {
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-}
-
-.project-desc {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-/* =============================
-   v1.2.0 – UI / UX
-   ============================= */
-
-/* Header + bouton hamburger */
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
-}
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-}
-.btn-menu {
-  width: 44px;
-  height: 44px;
-  border-radius: 0.9rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  color: var(--text-main);
-  cursor: pointer;
-  font-size: 1.2rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-menu:hover {
-  background: var(--bg-card-soft);
-  transform: translateY(-1px);
-}
-
-/* v1.2.0 – Menu & sections */
-.app-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.85rem 1rem;}
-.header-left{display:flex;align-items:center;gap:.9rem;}
-.btn-menu{width:44px;height:44px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);font-size:1.15rem;cursor:pointer;}
-.btn-menu:hover{background:var(--bg-card-soft);}
-
-#filter-bar{position:sticky;top:0;z-index:45;backdrop-filter:blur(8px);}
-
-.filter-actions{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
-.toggle-banners{display:flex;align-items:center;gap:.5rem;font-size:.85rem;}
-
-.legend-details{margin:0.6rem 1rem 0.2rem;border:1px solid var(--border-soft);border-radius:.9rem;padding:.55rem .75rem;background:var(--bg-card);}
-.legend-details summary{cursor:pointer;user-select:none;font-weight:600;}
-.legend-details[open]{background:var(--bg-card-soft);}
-
-.projects-section{margin-top:1rem;}
-.projects-section h2{margin:.2rem 0 .6rem;font-size:1.05rem;}
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;}
-.project-card{display:block;padding:.85rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card);color:inherit;text-decoration:none;}
-.project-card:hover{transform:translateY(-1px);background:var(--bg-card-soft);}
-.project-title{font-weight:700;margin-bottom:.2rem;}
-.project-desc{font-size:.82rem;color:var(--text-muted);}
-
-.footer-version{font-size:.8rem;opacity:.85;}
-
-/* Sticky filter bar */
-#filter-bar{position:sticky;top:0;z-index:60;}
-
-/* Menu drawer */
-.app-menu{position:fixed;inset:0;display:none;z-index:80;}
-.app-menu.open{display:block;}
-.app-menu-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);}
-.app-menu-panel{position:absolute;top:0;right:0;height:100%;width:min(320px,90vw);background:var(--bg-card);border-left:1px solid var(--border-soft);padding:1rem;display:flex;flex-direction:column;gap:.75rem;}
-.app-menu-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
-.app-menu-title{font-weight:700;}
-.app-menu-close{width:40px;height:40px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.app-menu-close:hover{background:var(--bg-card-soft);}
-.app-menu-nav{display:flex;flex-direction:column;gap:.45rem;}
-.menu-item{width:100%;text-align:left;padding:.65rem .75rem;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);cursor:pointer;font-size:.92rem;}
-.menu-item:hover{background:var(--bg-card);}
-.app-menu-footer{margin-top:auto;font-size:.8rem;color:var(--text-muted);}
-
-/* Modales (A propos / Contact) */
-.modal{position:fixed;inset:0;display:none;z-index:90;}
-.modal.open{display:flex;align-items:center;justify-content:center;}
-.modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);}
-.modal-dialog{position:relative;background:var(--bg-card);color:var(--text-main);border:1px solid var(--border-soft);border-radius:1rem;max-width:560px;width:92%;padding:1rem;box-shadow:0 20px 45px rgba(15,23,42,.45);}
-.modal-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;}
-.modal-header h2{font-size:1rem;margin:0;color:var(--blue-main);}
-.modal-close{width:40px;height:40px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.modal-close:hover{background:var(--bg-card-soft);}
-.modal-meta{font-size:.85rem;color:var(--text-muted);margin:.25rem 0 .75rem;}
-.modal-field{display:flex;flex-direction:column;gap:.35rem;}
-.modal-field span{font-size:.85rem;color:var(--text-muted);}
-.modal-field textarea{width:100%;min-height:120px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);padding:.75rem;resize:vertical;}
-.modal-actions{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;}
-.btn-primary{padding:.55rem .85rem;border-radius:.9rem;border:1px solid var(--blue-main);background:var(--blue-main);color:#fff;cursor:pointer;}
-.btn-secondary{padding:.55rem .85rem;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);cursor:pointer;}
-.btn-primary:hover{filter:brightness(1.05);}
-.btn-secondary:hover{background:var(--bg-card);}
-.modal-hint{margin-top:.6rem;font-size:.82rem;color:var(--text-muted);}
-
-/* Sticky filter bar */
-#filter-bar{position:sticky;top:0;z-index:60;}
-
-/* Menu drawer */
-.app-menu{position:fixed;inset:0;display:none;z-index:80;}
-.app-menu.open{display:block;}
-.app-menu-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);}
-.app-menu-panel{position:absolute;top:0;right:0;height:100%;width:min(320px,90vw);background:var(--bg-card);border-left:1px solid var(--border-soft);padding:1rem;display:flex;flex-direction:column;gap:.75rem;}
-
-/* Sticky filter bar */
-#filter-bar{position:sticky;top:0;z-index:60;}
-
-/* Menu drawer */
-.app-menu{position:fixed;inset:0;display:none;z-index:80;}
-.app-menu.open{display:block;}
-.app-menu-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);}
-.app-menu-panel{position:absolute;top:0;right:0;height:100%;width:min(320px,90vw);background:var(--bg-card);border-left:1px solid var(--border-soft);padding:1rem;display:flex;flex-direction:column;gap:.75rem;}
-.app-menu-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
-.app-menu-title{font-weight:700;}
-.app-menu-close{width:40px;height:40px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.app-menu-close:hover{background:var(--bg-card-soft);}
-.app-menu-panel{position:absolute;top:0;right:0;height:100%;width:min(320px,90vw);background:var(--bg-card);border-left:1px solid var(--border-soft);padding:1rem;display:flex;flex-direction:column;gap:.75rem;}
-.app-menu-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
-.app-menu-title{font-weight:700;}
-.app-menu-close{width:40px;height:40px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.app-menu-nav{display:flex;flex-direction:column;gap:.5rem;}
-.menu-item{width:100%;text-align:left;padding:.7rem .8rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card);color:inherit;cursor:pointer;}
-.menu-item:hover{background:var(--bg-card-soft);}
-.app-menu-footer{margin-top:auto;font-size:.82rem;opacity:.8;}
-
-.app-menu-close{width:40px;height:40px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.app-menu-nav{display:flex;flex-direction:column;gap:.5rem;}
-.menu-item{width:100%;text-align:left;padding:.7rem .8rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card);color:inherit;cursor:pointer;}
-.menu-item:hover{background:var(--bg-card-soft);}
-.app-menu-footer{margin-top:auto;font-size:.85rem;color:var(--text-muted);}
-
-/* Modales */
-.modal{position:fixed;inset:0;display:none;z-index:90;}
-.modal.open{display:flex;align-items:center;justify-content:center;}
-.modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);}
-.modal-dialog{position:relative;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:1rem;max-width:560px;width:92%;padding:1rem;box-shadow:0 20px 45px rgba(15,23,42,.45);}
-.modal-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;}
-.modal-close{width:40px;height:40px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.modal-close:hover{background:var(--bg-card-soft);}
-.modal-meta{opacity:.9;font-size:.9rem;}
-.modal-field{display:flex;flex-direction:column;gap:.35rem;margin-top:.6rem;}
-.modal-field textarea{width:100%;min-height:120px;resize:vertical;padding:.7rem;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg);color:var(--text-main);}
-.modal-actions{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;}
-.btn-primary,.btn-secondary{padding:.6rem .85rem;border-radius:.9rem;border:1px solid var(--border-soft);cursor:pointer;}
-.btn-primary{background:var(--blue-main);color:white;border-color:transparent;}
-.btn-secondary{background:var(--bg-card);color:var(--text-main);}
-.btn-secondary:hover{background:var(--bg-card-soft);}
-.modal-hint{margin-top:.5rem;font-size:.85rem;color:var(--text-muted);}
-
-/* Modales */
-.modal{position:fixed;inset:0;display:none;z-index:90;}
-.modal.open{display:flex;align-items:center;justify-content:center;}
-.modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);}
-.modal-dialog{position:relative;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:1rem;max-width:560px;width:92%;padding:1rem;box-shadow:0 20px 45px rgba(15,23,42,.45);}
-.modal-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;}
-.modal-header h2{font-size:1.05rem;margin:0;}
-.modal-close{width:40px;height:40px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.modal-close:hover{background:var(--bg-card-soft);}
-.modal-dialog{position:relative;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:1rem;max-width:560px;width:92%;padding:1rem;box-shadow:0 20px 45px rgba(15,23,42,.45);}
-.modal-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;}
-.modal-header h2{font-size:1.05rem;margin:0;}
-.modal-close{width:40px;height:40px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.modal-close:hover{background:var(--bg-card-soft);}
-.modal-meta{color:var(--text-muted);font-size:.85rem;}
-.modal-field{display:flex;flex-direction:column;gap:.35rem;margin-top:.75rem;}
-.modal-field textarea{width:100%;padding:.75rem;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);resize:vertical;}
-.modal-actions{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;}
-.btn-primary{padding:.7rem 1rem;border-radius:1rem;border:1px solid var(--blue-main);background:var(--blue-main);color:white;cursor:pointer;}
-.btn-secondary{padding:.7rem 1rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.btn-secondary:hover{background:var(--bg-card-soft);}
-.modal-hint{min-height:1.1rem;margin-top:.5rem;font-size:.85rem;color:var(--text-muted);}
-.modal-close{width:40px;height:40px;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.modal-close:hover{background:var(--bg-card-soft);}
-.modal-meta{color:var(--text-muted);font-size:.85rem;}
-.modal-field{display:flex;flex-direction:column;gap:.35rem;margin-top:.75rem;}
-.modal-field textarea{width:100%;padding:.75rem;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-page);color:var(--text-main);}
-.modal-actions{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;}
-.btn-primary{padding:.65rem .9rem;border-radius:1rem;border:1px solid var(--blue-main);background:var(--blue-main);color:white;cursor:pointer;}
-.btn-primary:hover{opacity:.95;}
-.btn-secondary{padding:.65rem .9rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);cursor:pointer;}
-.btn-secondary:hover{background:var(--bg-card);}
-.modal-hint{margin-top:.6rem;font-size:.85rem;color:var(--text-muted);min-height:1.2em;}
-.modal-field textarea{width:100%;padding:.75rem;border-radius:.9rem;border:1px solid var(--border-soft);background:var(--bg-page);color:var(--text-main);}
-.modal-actions{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;}
-.btn-primary{padding:.65rem .9rem;border-radius:1rem;border:1px solid var(--blue-main);background:var(--blue-main);color:white;cursor:pointer;}
-.btn-primary:hover{opacity:.95;}
-.btn-secondary{padding:.65rem .9rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card);color:var(--text-main);cursor:pointer;}
-.btn-secondary:hover{background:var(--bg-card-soft);}
-#copy-hint{margin-right:auto;color:var(--text-muted);font-size:.85rem;}
-
-
-/* =============================
-   v1.2.0 – Ajustements (25/01/2026)
-   ============================= */
-
-/* Header : éviter les règles globales sur <header> et réduire le logo */
-header.app-header{
-  max-width: 1100px;
-  margin: 0 auto 0.35rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  text-align: left;
-  gap: 1rem;
-  padding: 1rem 1rem 0.65rem;
-  flex-wrap: wrap;
-}
-
-header.app-header .header-left{
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  min-width: 260px;
-  flex: 1;
-}
-
-header.app-header .app-logo{
-  width: 110px;
-  max-width: 140px;
-  height: auto;
-  border-radius: 18px;
-}
-
-header.app-header .site-title-text{
-  text-align: left;
-}
-
-header.app-header .site-title-text h1{
-  margin: 0;
-  font-size: 1.55rem;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--blue-main);
-}
-
-header.app-header .site-title-text p{
-  margin: 0.15rem 0 0.25rem;
-  font-size: 0.95rem;
-  color: var(--text-muted);
-}
-
-header.app-header .badge-time{
-  margin-top: 0.15rem;
-  padding: 0.28rem 0.75rem;
-  font-size: 0.85rem;
-}
-
-/* Bouton menu : compact (⋯) */
-header.app-header .btn-menu{
-  width: 42px;
-  height: 42px;
-  border-radius: 0.9rem;
-  font-size: 1.45rem;
-}
-
-/* Ligne d'explication des filtres */
-.filter-help{
-  margin-top: 0.4rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  opacity: 0.95;
-}
-
-/* Menu compact (popover) */
-.menu-popover{
-  position: fixed;
-  inset: 0;
-  display: none;
-  z-index: 85;
-  background: transparent; /* click dehors pour fermer */
-}
-
-.menu-popover.open{
-  display: block;
-}
-
-.menu-popover-panel{
-  position: absolute;
-  right: 1rem;
-  top: 78px;
-  width: min(360px, 92vw);
-  background: var(--bg-card);
-  border: 1px solid var(--border-soft);
-  border-radius: 1rem;
-  padding: 0.9rem;
-  box-shadow: 0 20px 45px rgba(15,23,42,.45);
-}
-
-.menu-popover-header{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.6rem;
-}
-
-.menu-popover-title{
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.menu-popover-close{
-  width: 40px;
-  height: 40px;
-  border-radius: 0.9rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card);
-  color: var(--text-main);
-  cursor: pointer;
-}
-
-.menu-popover-close:hover{
-  background: var(--bg-card-soft);
-}
-
-
-/* --- Menu compact : bloc "Nos projets" cohérent avec l'UI --- */
-.menu-group{
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 0.65rem;
-}
-
-.menu-item-accordion{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  touch-action: manipulation;
-}
-
-/* Sur certains navigateurs, des sous-éléments peuvent capter le tap/clic.
-   On force l'évènement à tomber sur le bouton entier. */
-.menu-item-accordion > *{
-  pointer-events: none;
-}
-
-.menu-chevron{
-  opacity: 0.85;
-  transition: transform .18s ease;
-}
-
-.menu-item-accordion[aria-expanded="true"] .menu-chevron{
-  transform: rotate(180deg);
-}
-
-.menu-sublist{
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding-left: 0.35rem;
-}
-
-.menu-sublist[hidden]{
-  display: none !important;
-}
-
-
-.menu-subitem{
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.65rem 0.75rem;
-  border-radius: 0.95rem;
-  border: 1px solid var(--border-soft);
-  background: var(--bg-card-soft);
-  color: var(--text-main);
-  text-decoration: none;
-  font-size: 0.92rem;
-}
-
-.menu-subitem:hover{
-  background: var(--bg-card);
-}
-
-.menu-buttons{
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.menu-popover-footer{
-  margin-top: 0.75rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  opacity: 0.9;
-}
-
-@media (max-width: 640px){
-  header.app-header{
-    padding: 0.85rem 0.9rem 0.55rem;
-  }
-
-  header.app-header .app-logo{
-    width: 88px;
-    border-radius: 16px;
-  }
-
-  header.app-header .site-title-text h1{
-    font-size: 1.2rem;
-  }
-
-  .menu-popover-panel{
-    left: 0.75rem;
-    right: 0.75rem;
-    top: 74px;
-    width: auto;
-  }
-}
-
-
-/* =============================
-   v1.3.0 – Échange vêtements (WhatsApp)
-   ============================= */
-
-/* Empêche le décalage horizontal (mobile) */
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-/* Centre la légende (PC) comme le reste de la page */
-.legend-details {
-  width: min(960px, calc(100% - 2rem));
-  margin: 0.6rem auto 0.2rem;
-}
-
-/* Admin modal au-dessus du menu */
-.admin-modal { z-index: 220 !important; }
-.admin-modal-dialog { z-index: 221 !important; }
-.admin-modal-backdrop { z-index: 220 !important; }
-
-/* Bannières : le toggle doit toujours gagner */
-#alert-banner.is-hidden { display: none !important; }
-
-
-/* Generator – bannières (dates début/fin) */
-.banners-container{display:flex;flex-direction:column;gap:.6rem;margin-top:.6rem;}
-.banner-item{border:1px solid rgba(0,83,166,.25);background:var(--bg-card);border-radius:1rem;padding:.75rem;display:flex;flex-direction:column;gap:.55rem;}
-.banner-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
-.banner-item-emoji{height:40px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);padding:.2rem .6rem;}
-.banner-textarea{width:100%;min-height:72px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);padding:.6rem;resize:vertical;}
-.banner-targets{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.9rem;}
-.banner-targets label{display:inline-flex;align-items:center;gap:.25rem;padding:.25rem .45rem;border-radius:.7rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);}
-.banner-dates-row{gap:.8rem;}
-.banner-dates-label{font-weight:600;color:var(--text-muted);}
-.banner-date-field{display:flex;align-items:center;gap:.35rem;}
-.banner-date-field input{width:130px;max-width:42vw;height:38px;border-radius:.8rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);padding:.2rem .55rem;}
-
-.app-menu{overflow:hidden;}
-
-
-/* 🧥 Modal échange vêtements */
-.grid-2{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-/* Motif : 2 puces + texte (pas de gros cadres) */
-.motif-list{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 10px;
-}
-.motif-item{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap: 8px;
-  padding: 12px 12px;
-  border: 1px solid var(--border-soft);
-  border-radius: 14px;
-  background: var(--bg-card-soft);
-  cursor: pointer;
-  user-select:none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
-}
-.motif-item:hover{ border-color: rgba(30,115,201,0.55); }
-.motif-item:active{ transform: translateY(1px); }
-.motif-item input{
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--blue-soft);
-}
-.motif-item.is-selected{
-  border-color: var(--blue-soft);
-  box-shadow: 0 0 0 2px rgba(30,115,201,0.18);
-  background: var(--bg-card);
-}
-.motif-item::before{
-  content: "•";
-  opacity: .75;
-  line-height: 1.2;
-  margin-top: 2px;
-}
-.motif-item input{ margin-top: 2px; }
-.motif-text{
-  display:block;
-  text-align:center;
-  line-height:1.15;
-  font-weight:600;
-  color: var(--text-main);
-  font-size: 0.95rem;
-}
-@media (max-width: 420px){
-  .motif-list{ grid-template-columns: 1fr; }
-}
-@media (max-width: 640px){
-  .grid-2{ grid-template-columns: 1fr; }
-}
-
-.radio-row{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 14px;
-  background: rgba(255,255,255,.04);
-  margin-top: 10px;
-}
-.radio-row input{ transform: translateY(1px); }
-
-.field-hint{
-  display:block;
-  margin-top: 6px;
-  font-size: .85rem;
-  opacity: .75;
-}
-
-/* --- Choix stylés (ex: Échange vêtements) --- */
-.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin-top:.35rem;}
-.choice-btn{display:flex;align-items:center;gap:.55rem;padding:.65rem .75rem;border-radius:1rem;border:1px solid var(--border-soft);background:var(--bg-card-soft);color:var(--text-main);cursor:pointer;text-align:left;}
-.choice-btn .icon{width:1.4rem;display:inline-flex;justify-content:center;}
-.choice-btn .label{flex:1;min-width:0;}
-.choice-btn:hover{filter:brightness(1.02);}
-.choice-btn:active{transform:translateY(1px);}
-.choice-btn.active{border-color:var(--blue-main);box-shadow:0 0 0 3px rgba(0,83,166,.18);}
-.choice-btn:focus-visible{outline:3px solid rgba(0,83,166,.35);outline-offset:2px;}
-
-@media (max-width: 420px){
-  .choice-grid{grid-template-columns:1fr;}
-}
-
-
-/* v1.3.0 — Échange vêtements: champs & dropdown cohérents */
-.modal-field input,
-.modal-field select{
-  width:100%;
-  font-family:inherit;
-  font-size:0.9rem;
-  padding:.55rem .7rem;
-  border-radius:.8rem;
-  border:1px solid var(--border-soft);
-  background:var(--bg-card-soft);
-  color:var(--text-main);
-}
-.modal-field input:focus,
-.modal-field select:focus{
-  outline:none;
-  border-color:var(--blue-main);
-  box-shadow:0 0 0 1px rgba(0,83,166,.35);
-}
-.modal-compact{max-width:360px;}
-.modal-body{display:block;max-height:75vh;overflow:auto;padding-right:.15rem;}
-.subtle{opacity:.9}
-
-/* Dropdown "Type de vêtement" */
-.dd-trigger{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:.6rem;
-  border-radius:.8rem;
-  border:1px solid var(--border-soft);
-  background:var(--bg-card-soft);
-  color:var(--text-main);
-  padding:.55rem .7rem;
-  cursor:pointer;
-}
-.dd-trigger:hover{background:var(--bg-card);}
-.dd-trigger-left{display:flex;align-items:center;gap:.55rem;min-width:0;}
-.dd-trigger-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.dd-trigger-icon{
-  width:28px;height:28px;border-radius:8px;
-  background:rgba(255,255,255,.06);
-  border:1px solid var(--border-soft);
-  display:flex;align-items:center;justify-content:center;
-  flex:0 0 auto;
-}
-.dd-trigger-icon img{width:100%;height:100%;object-fit:cover;border-radius:7px;}
-.dd-caret{opacity:.8}
-
-.dd-menu{
-  margin-top:.45rem;
-  border:1px solid var(--border-soft);
-  background:var(--bg-card);
-  border-radius:.9rem;
-  overflow:hidden;
-  box-shadow:0 18px 40px rgba(15,23,42,.35);
-}
-.dd-item{
-  width:100%;
-  display:flex;
-  align-items:center;
-  gap:.7rem;
-  padding:.6rem .7rem;
-  background:transparent;
-  border:0;
-  color:var(--text-main);
-  cursor:pointer;
-  text-align:left;
-}
-.dd-item:hover{background:var(--bg-card-soft);}
-.dd-ico{
-  width:34px;height:34px;border-radius:10px;
-  object-fit:cover;
-  border:1px solid var(--border-soft);
-  flex:0 0 auto;
-}
-
-/* === Supabase / live update === */
-.live-update-toast {
-  margin: 0.45rem auto 0;
-  width: min(720px, calc(100% - 1.5rem));
-  padding: 0.55rem 0.75rem;
-  border-radius: 999px;
-  text-align: center;
-  font-weight: 800;
-  background: rgba(34, 197, 94, 0.18);
-  border: 1px solid rgba(134, 239, 172, 0.6);
-  color: #dcfce7;
-}
+]$banners$::jsonb,
+  alert_banner = $banner${
+  "actif": true,
+  "texte": "🚫 Bon courage et bonne révision pour le BIA\n📢 On compte sur vous pour le Challenge inter-EAJ"
+}$banner$::jsonb,
+  last_update = $lastupdate${
+  "auteur": "Yoann",
+  "dateTexte": "12/05/2026"
+}$lastupdate$::jsonb,
+  version = version + 1,
+  updated_at = now(),
+  updated_by_name = coalesce(updated_by_name, 'Import planning.js')
+where id = 'main';
