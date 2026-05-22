@@ -1,12 +1,44 @@
--- ======================================================
--- IMPORT DU PLANNING ACTUEL DANS SUPABASE
--- ======================================================
--- Lance d'abord supabase-setup.sql.
--- Puis lance ce fichier pour envoyer le planning.js actuel dans la ligne main.
+// ⚠️ Bannières d’alerte (multi-cibles : all / EAJ1 / EAJ2 / EAJ3)
+const ALERT_BANNERS = [
+  {
+    "actif": true,
+    "emoji": "🚫",
+    "type": "important",
+    "texte": "Bon courage et bonne révision pour le BIA",
+    "cibles": [
+      "EAJ1"
+    ],
+    "startDate": "12/05/2026",
+    "endDate": "20/05/2026"
+  },
+  {
+    "actif": true,
+    "emoji": "📢",
+    "type": "annonce",
+    "texte": "On compte sur vous pour le Challenge inter-EAJ",
+    "cibles": [
+      "EAJ2",
+      "EAJ3"
+    ],
+    "startDate": "14/05/2026",
+    "endDate": "17/05/2026"
+  }
+];
 
-update public.eaj_planning_state
-set
-  semaines = $semaines$[
+// ⚠️ Compat (ancien format) : concaténation des bannières
+const ALERT_BANNER = {
+  "actif": true,
+  "texte": "🚫 Bon courage et bonne révision pour le BIA\n📢 On compte sur vous pour le Challenge inter-EAJ"
+};
+
+// 📝 Dernière mise à jour (affichée dans le footer)
+const LAST_UPDATE = {
+  "auteur": "Yoann",
+  "dateTexte": "12/05/2026"
+};
+
+// 🗓️ LISTE DES SEMAINES / ÉVÉNEMENTS (isoDate au format AAAA-MM-JJ)
+const SEMAINES = [
   {
     "isoDate": "2025-12-03",
     "date": "3 décembre 2025",
@@ -1052,41 +1084,4 @@ set
       }
     ]
   }
-]$semaines$::jsonb,
-  alert_banners = $banners$[
-  {
-    "actif": true,
-    "emoji": "🚫",
-    "type": "important",
-    "texte": "Bon courage et bonne révision pour le BIA",
-    "cibles": [
-      "EAJ1"
-    ],
-    "startDate": "12/05/2026",
-    "endDate": "20/05/2026"
-  },
-  {
-    "actif": true,
-    "emoji": "📢",
-    "type": "annonce",
-    "texte": "On compte sur vous pour le Challenge inter-EAJ",
-    "cibles": [
-      "EAJ2",
-      "EAJ3"
-    ],
-    "startDate": "14/05/2026",
-    "endDate": "17/05/2026"
-  }
-]$banners$::jsonb,
-  alert_banner = $banner${
-  "actif": true,
-  "texte": "🚫 Bon courage et bonne révision pour le BIA\n📢 On compte sur vous pour le Challenge inter-EAJ"
-}$banner$::jsonb,
-  last_update = $lastupdate${
-  "auteur": "Yoann",
-  "dateTexte": "12/05/2026"
-}$lastupdate$::jsonb,
-  version = version + 1,
-  updated_at = now(),
-  updated_by_name = coalesce(updated_by_name, 'Import planning.js')
-where id = 'main';
+];
